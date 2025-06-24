@@ -1,10 +1,10 @@
 <?php
 
+require_once __DIR__ . '/config.php';
 
-
-function getStockInfo($symbol, $apiKey) {
+function getStockInfo($symbol) {
     // Get quote (real-time price)
-    $quoteUrl = "https://finnhub.io/api/v1/quote?symbol=" . urlencode($symbol) . "&token=" . $apiKey;
+    $quoteUrl = "https://finnhub.io/api/v1/quote?symbol=" . urlencode($symbol) . "&token=" . API_KEY;
     $quoteJson = file_get_contents($quoteUrl);
     if ($quoteJson === false) {
         die("Failed to fetch quote data.");
@@ -12,7 +12,7 @@ function getStockInfo($symbol, $apiKey) {
     $quoteData = json_decode($quoteJson, true);
 
     // Get company profile (logo, name)
-    $profileUrl = "https://finnhub.io/api/v1/stock/profile2?symbol=" . urlencode($symbol) . "&token=" . $apiKey;
+    $profileUrl = "https://finnhub.io/api/v1/stock/profile2?symbol=" . urlencode($symbol) . "&token=" . API_KEY;
     $profileJson = file_get_contents($profileUrl);
     if ($profileJson === false) {
         die("Failed to fetch company profile data.");
@@ -22,6 +22,8 @@ function getStockInfo($symbol, $apiKey) {
     // Combine data
     return [
         'symbol' => $symbol,
+        'country' => $profileData['country'] ?? 'N/A',
+        'currency' => $profileData['currency'] ?? 'N/A',
         'name' => $profileData['name'] ?? 'N/A',
         'logo' => $profileData['logo'] ?? '',
         'current_price' => $quoteData['c'] ?? 'N/A',
@@ -33,9 +35,9 @@ function getStockInfo($symbol, $apiKey) {
 }
 
 // Example usage
-$apiKey = 'YOUR_API_KEY_HERE';
+
 $symbol = 'AAPL';  // Replace with desired stock symbol
-$stockInfo = getStockInfo($symbol, $apiKey);
+$stockInfo = getStockInfo($symbol);
 
 // Output the results
 echo "<h2>{$stockInfo['name']} ({$stockInfo['symbol']})</h2>";
@@ -47,4 +49,41 @@ echo "Open: {$stockInfo['open_price']}<br>";
 echo "High: {$stockInfo['high_price']}<br>";
 echo "Low: {$stockInfo['low_price']}<br>";
 echo "Previous Close: {$stockInfo['previous_close']}<br>";
+
+
+
+
+// $view = $_GET['view'] ?? 'today';  // Default to 'today' if not set
+
+// // Decide date range based on view
+// switch ($view) {
+//     case 'week':
+//         $from = date('Y-m-d', strtotime('-7 days'));
+//         break;
+//     case 'month':
+//         $from = date('Y-m-d', strtotime('-30 days'));
+//         break;
+//     case 'today':
+//     default:
+//         $from = date('Y-m-d');
+//         break;
+// }
+
+// $to = date('Y-m-d');
+function getHistoricalData($symbol, $from, $to) {
+    // Finnhub needs UNIX timestamps
+    $fromTs = strtotime($from);
+    $toTs = strtotime($to);
+    
+    $url = "https://finnhub.io/api/v1/stock/candle?symbol=" . urlencode($symbol) .
+           "&resolution=D&from=$fromTs&to=$toTs&token={API_KEY}";
+
+    $json = file_get_contents($url);
+    if ($json === false) {
+        die("Failed to fetch historical data.");
+    }
+
+    return json_decode($json, true);
+}
+
 ?>
