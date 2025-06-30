@@ -1,6 +1,6 @@
 <?php
 // Path to your SQLite database file
-$db_file = 'stock_app.sqlite3';
+$db_file = '/Users/pelinsualtun/Documents/Stox_Web/stock_app.sqlite3';
 
 // Open (or create) SQLite3 database connection
 try {

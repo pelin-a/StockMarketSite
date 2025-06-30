@@ -5,10 +5,14 @@ define('DB_PATH', __DIR__ . '/../stock_app.sqlite3');
 // Example: API key for your stock/news API
 define('API_KEY', 'd1cppkhr01qic6lf7e20d1cppkhr01qic6lf7e2g');
 
-
+define('API_KEY_NEWS', 'pub_999d0506b4f1461badb43e6e9fcdd42c');
 // Example: Site name
 define('SITE_NAME', 'Stox Website');
-
+define('COUNTRY_SYMBOLS', [
+    'USA' => ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA', 'NVDA', 'META', 'JPM', 'BAC', 'NFLX'],
+    'Germany' => ['SAP.DE', 'BAS.DE', 'ALV.DE', 'VOW3.DE', 'DTE.DE'],
+    'Japan' => ['7203.T', '6758.T', '9984.T', '8316.T', '6861.T'],
+    'China' => ['BABA', 'JD', 'PDD', 'NIO', 'TCEHY']]);
 
 // Global STOCKS dictionary with country as key and array of tickers as value
 define('STOCKS', [
@@ -23,8 +27,8 @@ define('STOCKS', [
         "DIS", "BAC", "PEP", "CVX", "KO"
     ],
     "Germany" => [
-        "SAP", "DTE.DE", "BAS.DE", "ALV.DE", "BMW.DE",
-        "DBK.DE", "VOW3.DE", "SIE.DE", "BAYN.DE", "FRE.DE"
+        "FSX", "XETR", "XMUN", "XSTU", "XHAM",
+        "DUS", "XBER"
     ],
     "UK" => [
         "HSBA.L", "BP.L", "VOD.L", "GSK.L", "AZN.L",
@@ -50,8 +54,50 @@ define('STOCKS', [
         "SONY", "TM", "NTDOY", "MFG", "NMR",
         "SMFG", "SFTBY", "CAJ", "HMC", "8306.T"
     ]
-]
-) 
+    ]
+) ;
+function getStocksByCountry($country){
+
+    $stocksData = [
+    'United States' => [
+        ['symbol' => 'AAPL', 'price' => 200.08, 'change_percent' => -0.49],
+        ['symbol' => 'MSFT', 'price' => 330.55, 'change_percent' => 1.12],
+        ['symbol' => 'GOOGL', 'price' => 2800.35, 'change_percent' => 0.75],
+        ['symbol' => 'AMZN', 'price' => 126.78, 'change_percent' => 0.92],
+        ['symbol' => 'TSLA', 'price' => 255.10, 'change_percent' => -1.20],
+    ],
+    'Germany' => [
+        ['symbol' => 'DTE.DE', 'price' => 22.45, 'change_percent' => 0.85],
+        ['symbol' => 'BAS.DE', 'price' => 48.90, 'change_percent' => -0.42],
+        ['symbol' => 'BMW.DE', 'price' => 96.30, 'change_percent' => 1.05],
+        ['symbol' => 'SAP.DE', 'price' => 135.70, 'change_percent' => -0.18],
+        ['symbol' => 'VOW3.DE', 'price' => 112.80, 'change_percent' => 0.34],
+    ],
+    'Canada' => [
+        ['symbol' => 'SHOP.TO', 'price' => 89.75, 'change_percent' => 2.13],
+        ['symbol' => 'RY.TO', 'price' => 123.10, 'change_percent' => -0.66],
+        ['symbol' => 'TD.TO', 'price' => 80.40, 'change_percent' => 0.12],
+        ['symbol' => 'BNS.TO', 'price' => 66.20, 'change_percent' => -0.45],
+        ['symbol' => 'ENB.TO', 'price' => 51.75, 'change_percent' => 0.27],
+    ],
+    'China' => [
+        ['symbol' => 'BABA', 'price' => 78.60, 'change_percent' => -1.25],
+        ['symbol' => 'JD', 'price' => 33.45, 'change_percent' => 0.73],
+        ['symbol' => 'TCEHY', 'price' => 40.20, 'change_percent' => 0.38],
+        ['symbol' => 'PDD', 'price' => 120.10, 'change_percent' => -0.90],
+        ['symbol' => 'NIO', 'price' => 9.45, 'change_percent' => 2.05],
+    ],
+    'Japan' => [
+        ['symbol' => '7203.T', 'price' => 2600.00, 'change_percent' => 0.55], // Toyota
+        ['symbol' => '6758.T', 'price' => 13250.00, 'change_percent' => -0.88], // Sony
+        ['symbol' => '9984.T', 'price' => 6500.00, 'change_percent' => 1.20], // SoftBank
+        ['symbol' => '7267.T', 'price' => 875.20, 'change_percent' => 0.45], // Honda
+        ['symbol' => '9432.T', 'price' => 3100.75, 'change_percent' => -0.35], // NTT
+    ],
+];
+    return $stocksData[$country] ?? [];
+}
+
 
 
 // Usage example:

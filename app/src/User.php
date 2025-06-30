@@ -8,7 +8,34 @@ require_once 'db.php';
 //     echo $row['username'] . "<br>";
 // }
 
-function registration($username, $password, $email): string {
+Class User {
+    private $username;
+    private $password;
+    private $email;
+
+    public function __construct($username, $password, $email) {
+        $this->username = $username;
+        $this->password = $password;
+        $this->email = $email;
+    }
+
+    public function getUsername() {
+        return $this->username;
+    }
+
+    public function getPassword() {
+        return $this->password;
+    }
+
+    public function getEmail() {
+        return $this->email;
+    }
+
+
+
+
+
+    function registration($username, $password, $email): string {
     $db = getDBConnection();
     $statement= $db-> prepare("SELECT * FROM users WHERE username = :username OR email = :email");
         if (!$statement) {
@@ -27,9 +54,9 @@ function registration($username, $password, $email): string {
         $insertStatement->bindValue(":password", $hashedPassword, SQLITE3_TEXT);
         $insertStatement->bindValue(":email", $email, SQLITE3_TEXT);
         if ($insertStatement->execute()) {
-            return "Registration successful.";
+            return True;
         } else {
-            return "Registration failed.";
+            return False;
         }
     }
     
@@ -43,18 +70,24 @@ function login($email, $password): string {
     $row = $result->fetchArray(SQLITE3_ASSOC);
     if ($row) { 
         if (password_verify($password, $row['password'])) {
-            echo "Login successful.";
+            
             return True;
         } else {
-            echo "Invalid password.";
-            return False;
+            
+            return 2;
         }
     } else {
-        echo "User not found.";
+        
         return False;
     }
 }
+}
 
+$usr= new User('', '', ''); // Create an instance of User class with empty values
+// You can now use $usr to call methods like $usr->registration() or $usr
 
+// $usr -> registration('pelin','pelin', 'pelin@gmail.com')
+
+// print($usr -> login('pelin@gmail.com', 'pelin'));
 
 ?>
