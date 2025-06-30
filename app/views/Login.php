@@ -73,6 +73,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <button type="submit" class="login-btn">Login</button>
             </form>
+
+            <button class="register-btn-big" onclick="window.location.href='Register.php'">Register</button>
             
             <!-- Uyarı/hata mesajı alanı -->
         <?php if (!empty($error)): ?>
