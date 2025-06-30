@@ -21,7 +21,7 @@
 require_once __DIR__ . '/config.php';
 function getNews($country = 'us', $limit = 10): array {
     $apiKey = API_KEY_NEWS; // Replace with your API key
-    $url = "https://newsdata.io/api/1/news?apikey=$apiKey&country=$country&category=business&language=en";
+    $url = "https://newsdata.io/api/1/news?apikey=$apiKey&country=$country&category=business&language=en&page=1";
 
     $response = @file_get_contents($url);
     if (!$response) {
@@ -33,18 +33,36 @@ function getNews($country = 'us', $limit = 10): array {
     if (!isset($data['results'])) return [];
 
     $newsList = [];
-    foreach (array_slice($data['results'], 0, $limit) as $item) {
-        $newsList[] = [
-            'title'    => $item['title'] ?? 'No Title',
-            'date'     => $item['pubDate'] ?? 'No Date',
-            'category' => $item['category'][0] ?? 'General',
-            'summary'  => $item['description'] ?? 'No Summary',
-            'url'      => $item['link'] ?? '#',
-        ];
+    $maxFetch = 20;
+    $fetched = 0;
+
+    foreach ($data['results'] as $item) {
+        if ($fetched >= $maxFetch) break;
+
+        // Check for all required fields
+        if (
+            !empty($item['title']) &&
+            !empty($item['pubDate']) &&
+            !empty($item['category']) &&
+            !empty($item['description']) &&
+            !empty($item['link'])
+        ) {
+            $newsList[] = [
+                'title'    => $item['title'],
+                'date'     => $item['pubDate'],
+                'category' => $item['category'][0],
+                'summary'  => $item['description'],
+                'url'      => $item['link'],
+            ];
+        }
+
+        $fetched++;
+        if (count($newsList) >= $limit) break;
     }
 
     return $newsList;
 }
+
 
 
 
