@@ -1,6 +1,6 @@
 
 <?php
-require_once '/Users/pelinsualtun/Documents/Stox_Web/app/src/News.php'; 
+require_once __DIR__ . '/../src/News.php'; 
 
 
 $newsList = getNews();

@@ -1,7 +1,7 @@
 
 <?php
 session_start();
-require_once '/Users/pelinsualtun/Documents/Stox_Web/app/src/User.php';
+require_once __DIR__ . '/../src/User.php';
 
 $error = '';
 

@@ -1,6 +1,6 @@
 
 <?php
-require_once '/Users/pelinsualtun/Documents/Stox_Web/app/src/Stock.php'; 
+require_once __DIR__ . '/../src/Stock.php'; 
 
 $apiKey = "043de246c6e34bc8b644bdaa7f669aca"; // Replace with your real API key
 $symbols = ['AAPL', 'GOOGL', 'MSFT','TSLA', 'AMZN', 'NFLX']; // Example symbols
