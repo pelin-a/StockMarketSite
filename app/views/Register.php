@@ -3,7 +3,6 @@ session_start();
 
 $error = '';
 
-// Form gönderildiyse, burada backend eklenebilir
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Basit demo için, gerçek kayıt eklenmedi
     $firstname = $_POST['firstname'] ?? '';
@@ -11,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email     = $_POST['email'] ?? '';
     $password  = $_POST['password'] ?? '';
 
-    // Burada veritabanına ekleme işlemini yaparsın (eklenmedi!)
+    // Pelin buraya veritabanini ekleyebilirsin.
     // Şimdilik doğrudan Home.php'ye yönlendiriyorum:
     header('Location: Home.php');
     exit();
