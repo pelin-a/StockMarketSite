@@ -27,7 +27,7 @@ $userInfo=getUserInfo($userEmail);
   </ul>
   <div class="navbar-profile">
     <span><?= $userInfo['username'] ?></span>
-    <a class="logout" href="Login.php">Logout</a>
+    <a class="logout" href="../src/logout.php">Logout</a>
     <button id="themeSwitcher" title="Switch theme" class="theme-switcher-btn">🌞</button>
   </div>
 </nav>

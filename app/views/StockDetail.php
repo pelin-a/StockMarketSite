@@ -1,3 +1,13 @@
+<?php
+session_start();
+require_once __DIR__ . '/../src/User.php';
+require_once __DIR__ . '/../src/Stock.php'; 
+$userEmail=$_SESSION['user_email'] ?? 'Guest'; 
+// Default to 'Guest' if not logged in
+$userInfo=getUserInfo($userEmail);
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,9 +27,9 @@
     <li><a href="StockDetail.php" class="active">Stock Detail</a></li>
   </ul>
   <div class="navbar-profile">
-    <span>👤 User</span>
-    <a class="logout" href="Login.php">Logout</a>
-    <button id="themeSwitcher" class="theme-switcher-btn">🌞</button>
+    <span><?= $userInfo['username'] ?></span>
+    <a class="logout" href="../src/logout.php">Logout</a>
+    <button id="themeSwitcher" title="Switch theme" class="theme-switcher-btn">🌞</button>
   </div>
 </nav>
 

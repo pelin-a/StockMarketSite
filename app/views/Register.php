@@ -13,12 +13,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email     = $_POST['email'] ?? '';
     $password  = $_POST['password'] ?? '';
 
+    $user = new User($username, $password, $email);
 
+    $result = $user-> registration($username, $firstname, $lastname, $password, $email);
 
+    if ($result === true) {
+        $_SESSION['user_email'] = $email;
+        header('Location: Home.php');
+        exit();
+    } elseif ($result === 2) {
+        $error = 'User exists.';
+    } else {
+        $error = 'Registration failed';
+    }
 
-
-    header('Location: Home.php');
-    exit();
+    //exit();
 }
 ?>
 

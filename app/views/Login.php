@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $loginResult = $tempUser->login($email, $password);
 
-    if ($loginResult == true) {
+    if ($loginResult === true) {
         $_SESSION['user_email'] = $email;
         header('Location: Home.php');
         exit();

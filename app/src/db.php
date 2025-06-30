@@ -19,6 +19,7 @@ function getDBConnection() {
 // Use $db or getDBConnection() from here onward
 
 // SQL to create tables (note: no trailing commas before closing parentheses)
-
-
+//$db->exec("ALTER TABLE users ADD COLUMN firstname TEXT;");
+//$db->exec("ALTER TABLE users ADD COLUMN lastname TEXT;");
+//$db->exec("ALTER TABLE users ADD COLUMN created_at DATETIME;");
 ?>
