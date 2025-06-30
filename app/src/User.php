@@ -35,7 +35,7 @@ Class User {
 
 
 
-    function registration($username, $password, $email): string {
+    function registration($username, $firstname,$lastname, $password, $email): string {
     $db = getDBConnection();
     $statement= $db-> prepare("SELECT * FROM users WHERE username = :username OR email = :email");
         if (!$statement) {
@@ -51,6 +51,8 @@ Class User {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         $insertStatement = $db->prepare("INSERT INTO users (username, password, email) VALUES (:username, :password, :email)");
         $insertStatement->bindValue(":username", $username, SQLITE3_TEXT);
+        $insertStatement->bindValue(":firstname", $firstname, SQLITE3_TEXT);
+        $insertStatement->bindValue(":lastname", $lastname, SQLITE3_TEXT);   
         $insertStatement->bindValue(":password", $hashedPassword, SQLITE3_TEXT);
         $insertStatement->bindValue(":email", $email, SQLITE3_TEXT);
         if ($insertStatement->execute()) {

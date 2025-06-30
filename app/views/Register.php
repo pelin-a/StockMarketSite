@@ -1,17 +1,22 @@
 <?php
 session_start();
+include_once __DIR__ . '/../src/db.php'; 
+include_once __DIR__ . '/../src/User.php'; 
 
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Basit demo için, gerçek kayıt eklenmedi
+    $username = $_POST['username'];
     $firstname = $_POST['firstname'] ?? '';
     $lastname  = $_POST['lastname'] ?? '';
     $email     = $_POST['email'] ?? '';
     $password  = $_POST['password'] ?? '';
 
-    // Pelin buraya veritabanini ekleyebilirsin.
-    // Şimdilik doğrudan Home.php'ye yönlendiriyorum:
+
+
+
+
     header('Location: Home.php');
     exit();
 }
@@ -39,6 +44,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <form class="main-login-form" method="POST" action="Register.php">
+                <label for="register_username" class="visually-hidden">Username</label>
+                <input id="register_username" name="username" type="text" placeholder="Username" required>
+
                 <label for="register_firstname" class="visually-hidden">First Name</label>
                 <input id="register_firstname" name="firstname" type="text" placeholder="First Name" required>
                 
