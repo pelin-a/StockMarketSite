@@ -899,3 +899,23 @@
   border-radius: 6px;
   background: linear-gradient(90deg,#7ad1ec 0,#ffe37a 100%);
 }
+
+
+/*Register Page*/
+.register-btn-big {
+  width: 100%;
+  margin-top: 18px;
+  background: #2275e8;
+  color: #fff;
+  border: none;
+  padding: 14px 0;
+  font-size: 1.12em;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 12px #155bb688;
+}
+.register-btn-big:hover {
+  background: #1651b8;
+}
