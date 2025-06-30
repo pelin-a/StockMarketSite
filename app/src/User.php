@@ -1,5 +1,5 @@
 <?php
-require_once 'db.php';
+require_once __DIR__ . '/db.php'; // Adjust path if needed
 
 // // Now you can use $db directly here
 // $result = $db->query("SELECT * FROM users");
@@ -83,11 +83,31 @@ function login($email, $password): string {
 }
 }
 
+function getUserInfo($email) {
+    $db = getDBConnection();
+    $statement = $db->prepare('SELECT * FROM users WHERE email = :email');
+    if (!$statement) {
+        return ["error" => "Prepare failed: " . $db->lastErrorMsg()];
+    }
+    $statement->bindValue(":email", $email, SQLITE3_TEXT);
+    $result = $statement->execute();
+    $row = $result->fetchArray(SQLITE3_ASSOC);
+    if ($row) {
+        return $row; // returns associative array (dictionary)
+    } else {
+        return null; // user not found
+    }
+}
+
+
+
+
 $usr= new User('', '', ''); // Create an instance of User class with empty values
 // You can now use $usr to call methods like $usr->registration() or $usr
 
 // $usr -> registration('pelin','pelin', 'pelin@gmail.com')
 
 // print($usr -> login('pelin@gmail.com', 'pelin'));
+
 
 ?>
