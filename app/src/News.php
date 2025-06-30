@@ -21,7 +21,7 @@
 require_once __DIR__ . '/config.php';
 function getNews($country = 'us', $limit = 10): array {
     $apiKey = API_KEY_NEWS; // Replace with your API key
-    $url = "https://newsdata.io/api/1/news?apikey=$apiKey&country=$country&category=business&language=en&page=1";
+    $url = "https://newsdata.io/api/1/news?apikey=$apiKey&country=$country&category=business&language=en";
 
     $response = @file_get_contents($url);
     if (!$response) {
@@ -63,6 +63,7 @@ function getNews($country = 'us', $limit = 10): array {
     return $newsList;
 }
 
+ // For testing purposes, remove in production
 
 
 
