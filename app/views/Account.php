@@ -1,3 +1,10 @@
+<?php
+session_start();
+require_once __DIR__ . '/../src/User.php'; // Adjust path if needed
+$userEmail=$_SESSION['user_email'] ?? 'Guest'; 
+// Default to 'Guest' if not logged in
+$userInfo=getUserInfo($userEmail);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,7 +26,7 @@
     <li><a href="StockDetail.php">Stock Detail</a></li>
   </ul>
   <div class="navbar-profile">
-    <span>👤 Betül</span>
+    <span><?= $userInfo['username'] ?></span>
     <a class="logout" href="Login.php">Logout</a>
     <button id="themeSwitcher" title="Switch theme" class="theme-switcher-btn">🌞</button>
   </div>
@@ -31,9 +38,9 @@
   <section class="account-card">
     <div class="account-avatar">B</div>
     <div class="account-info">
-      <h2>Betül</h2>
+      <h2><?= $userInfo['username'] ?></h2>
       <p class="user-badge">Standard Member</p>
-      <p class="user-email">betul@example.com</p>
+      <p class="user-email"><?= $userInfo['email'] ?></p>
       <p class="member-since">Member since: Jan 2024</p>
     </div>
   </section>
