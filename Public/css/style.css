@@ -1,0 +1,901 @@
+:root {
+    --brand-blue: #2196f3;
+    --dark-bg: #181A20;
+    --dark-card: #23262F;
+    --border: rgba(255,255,255,0.06);
+    --text: #fff;
+    --text-subtle: #bdbdbd;
+    --shadow: 0 4px 24px 0 rgba(20,30,46,0.1);
+    }
+    
+    /* Görsel erişilebilirlik için gizli labellar */
+    .visually-hidden {
+    position: absolute !important;
+    clip: rect(1px, 1px, 1px, 1px);
+    padding: 0 !important;
+    border: 0 !important;
+    height: 1px; width: 1px;
+    overflow: hidden;
+    }
+    
+    /* Genel sayfa */
+    body, html {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #141414 80%, #23272e 100%);
+    font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+    }
+    
+    .login-bg {
+    min-height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    }
+    
+    .login-container {
+    background: #1e1e23;
+    border-radius: 20px;
+    padding: 48px 36px 38px 36px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.48);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 350px;
+    max-width: 95vw;
+    }
+    
+    .logo-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 18px;
+    }
+    .logo {
+    width: 46px;
+    height: 46px;
+    margin-right: 12px;
+    }
+    .brand-title {
+    font-size: 2.2rem;
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 1px;
+    }
+    
+    .welcome {
+    color: #fff;
+    font-size: 1.3rem;
+    margin: 0;
+    font-weight: 600;
+    margin-bottom: 8px;
+    }
+    
+    .info {
+    color: #bababa;
+    font-size: 1.05rem;
+    margin-bottom: 26px;
+    }
+    
+    /* SOSYAL MEDYA BUTONLARI */
+    .social-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+    margin-bottom: 28px;
+    }
+    
+    .social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 7px;
+    padding: 13px 0;
+    width: 100%;
+    transition:
+    background 0.18s,
+    color 0.15s,
+    box-shadow 0.18s,
+    transform 0.18s;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    outline: none;
+    gap: 14px;
+    }
+    .social-btn .social-icon {
+    width: 22px; height: 22px;
+    margin-right: 9px;
+    display: inline-block;
+    vertical-align: middle;
+    }
+    
+    .social-btn:active,
+    .login-btn:active {
+    transform: scale(0.98);
+    }
+    
+    /* Apple */
+    .social-btn.apple {
+    background: #434343;
+    color: #fff;
+    border: 1.5px solid #eee;
+    }
+    .social-btn.apple:hover {
+    background: #222121;
+    box-shadow: 0 4px 18px 0 #1115;
+    transform: translateY(-2px) scale(1.03);
+    }
+    
+    /* Google */
+    .social-btn.google {
+    background: #434343;
+    color: #fff;
+    border: 1.5px solid #eee;
+    }
+    .social-btn.google:hover {
+    background: #bdbdbd;
+    box-shadow: 0 4px 18px 0 #d1d1d124;
+    transform: translateY(-2px) scale(1.03);
+    }
+    
+    /* Facebook */
+    .social-btn.facebook {
+    background: #434343;
+    color: #fff;
+    border: 1.5px solid #eee;
+    }
+    .social-btn.facebook:hover {
+    background: #155ec0;
+    box-shadow: 0 4px 18px 0 #186ada48;
+    transform: translateY(-2px) scale(1.03);
+    }
+    
+    /* Divider (isteğe bağlı) */
+    .divider {
+    margin: 21px 0 17px 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap:7px;
+    }
+    .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    }
+    .divider span {
+    color: var(--text-subtle);
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin: 0 6px;
+    }
+    
+    /* FORM */
+    .main-login-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 12px;
+    }
+    
+    .main-login-form input {
+    padding: 13px 10px;
+    border-radius: 6px;
+    border: 1px solid #2c2c38;
+    background: #23262e;
+    font-size: 1.15rem;
+    color: #fff;
+    outline: none;
+    transition: border 0.17s;
+    }
+    .main-login-form input:focus {
+    border: 1px solid #3898fc;
+    }
+    .login-btn {
+    padding: 13px 0;
+    width: 100%;
+    border: none;
+    border-radius: 7px;
+    background: var(--brand-blue);
+    color: white;
+    font-size: 1.18rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    transition: background 0.15s;
+    margin-top: 10px;
+    box-shadow: 0 1.5px 12px #2182f35a;
+    cursor: pointer;
+    }
+    .login-btn:hover {
+    background: #146ac2;
+    }
+    
+    /* Hata Mesajı */
+    .error-msg {
+    width: 100%;
+    background: #ff3e3e;
+    color: #fff;
+    border-radius: 5px;
+    padding: 10px 8px;
+    margin-top: 18px;
+    font-size: 1.02rem;
+    text-align: center;
+    font-weight: 500;
+    opacity: 0.97;
+    box-shadow: 0 2px 16px #ea222287;
+    }
+    
+    /* Responsive for small screens */
+    @media (max-width: 500px) {
+    .login-container { padding: 24px 8vw; min-width: unset; }
+    .brand-title { font-size: 1.4rem; }
+    .logo { width: 35px; height: 35px; }
+    .main-login-form input { font-size: 1rem;}
+    }
+
+
+
+
+
+    :root {
+        --primary-bg: #181a20;
+        --secondary-bg: #232734;
+        --main-color: #f6f9fe;
+        --accent: #4caf50;
+        --error: #e53935;
+        --card-radius: 16px;
+        --spinner-color: #2196f3;
+      }
+      
+      body {
+        margin: 0;
+        background: var(--primary-bg);
+        color: var(--main-color);
+        font-family: 'Segoe UI', 'Arial', 'sans-serif';
+        transition: background 0.3s, color 0.3s;
+      }
+      
+      body.light-mode {
+        --primary-bg: #f6f9fe;
+        --secondary-bg: #fff;
+        --main-color: #232734;
+        background: var(--primary-bg);
+        color: var(--main-color);
+      }
+      
+      /* Navbar */
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: var(--secondary-bg);
+        padding: 18px 32px;
+        border-bottom: 2px solid #2225;
+      }
+      
+      .navbar-brand {
+        font-weight: bold;
+        font-size: 1.7em;
+        letter-spacing: 1px;
+      }
+      
+      .navbar-links {
+        display: flex;
+        list-style: none;
+        gap: 30px;
+        margin: 0;
+        padding: 0;
+      }
+      
+      .navbar-links a {
+        color: var(--main-color);
+        text-decoration: none;
+        font-size: 1em;
+        padding-bottom: 4px;
+        border-bottom: 2px solid transparent;
+        transition: border .2s;
+      }
+      
+      body.light-mode .navbar-links a {
+        color: #232734;
+      }
+      
+      .navbar-links a.active,
+      .navbar-links a:hover {
+        border-bottom: 2px solid var(--accent);
+      }
+      
+      .navbar-profile {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      
+      .logout {
+        color: #e53935;
+        text-decoration: none;
+        margin-left: 6px;
+        transition: text-decoration .15s;
+      }
+      .logout:hover {
+        text-decoration: underline;
+      }
+      
+      .theme-switcher-btn {
+        background: none;
+        border: none;
+        font-size: 1.3em;
+        cursor: pointer;
+        margin-left: 10px;
+        outline: none;
+      }
+      
+      .main-content {
+        max-width: 950px;
+        margin: 32px auto 0 auto;
+        padding: 18px;
+      }
+      
+      .top-row {
+        display: flex;
+        gap: 22px;
+        margin-bottom: 28px;
+        justify-content: center;
+      }
+      
+      /* Kartlar */
+      .card {
+        background: var(--secondary-bg);
+        border-radius: var(--card-radius);
+        box-shadow: 0 2px 22px 0 #0001;
+        padding: 22px 18px 18px 18px;
+        min-width: 250px;
+        min-height: 180px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        /* Tüm kartlara aynı yükseklik */
+      }
+      
+      .portfolio-card, .market-card, .favs-card {
+        flex: 1 1 300px;
+        margin: 0;
+        max-width: 370px;
+        min-height: 180px; /* Eşit yükseklik için ekledik */
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+      
+      /* Market Overview */
+      .market-card {
+        flex: 1 1 300px;
+        max-width: 370px;
+      }
+      
+      .market-list,
+      .favorites,
+      .portfolio-summary {
+        list-style: none;
+        margin: 15px 0 0 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      
+      .market-list li,
+      .favorites li,
+      .portfolio-summary > div {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 1.11em;
+        min-height: 28px;
+        padding: 0 2px;
+      }
+      
+      /* Eğer portfolio-summary'nin altındaki elemanlar <div> ise yukarıdaki çalışır. */
+      
+      .profit-up { color: var(--accent); font-weight: bold;}
+      .profit-down { color: var(--error); font-weight: bold; }
+      .currency {
+        font-size: .92em;
+        margin-left: 2px;
+        color: #aaa;
+      }
+      
+      /* Portfolio Summary içi */
+      .total-value span,
+      .profit span {
+        display: block;
+        color: #aaa;
+        font-size: .95em;
+      }
+      
+      /* Portfolio Extra Bilgi */
+      .portfolio-extra {
+        margin-top: 12px;
+        font-size: 0.95em;
+        color: #bdbdbd;
+        display: flex;
+        gap: 7px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .portfolio-extra b {
+        color: #fff;
+      }
+      
+      /* World Stocks ortalanmış, geniş */
+      .center-card {
+        margin: 0 auto 24px auto;
+        max-width: 650px;
+        width: 100%;
+      }
+      .worldstocks-card {
+        margin-top: 0;
+        align-items: flex-start;
+      }
+      /* World Stocks içi */
+      .worldstocks-header {
+        margin-bottom: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+      .worldstocks-header label {
+        font-size: 1.05em;
+        margin-bottom: 2px;
+      }
+      .worldstocks-header select {
+        font-size: 1.12em;
+        padding: 7px 16px;
+        border-radius: 8px;
+        border: 1px solid #34374e;
+        background: #232734;
+        color: var(--main-color);
+        margin-top: 3px;
+        cursor: pointer;
+      }
+      body.light-mode .worldstocks-header select {
+        background: #f5f5fa;
+        color: #232734;
+        border: 1px solid #bdbdbd;
+      }
+      .worldstocks-list-container {
+        width: 100%;
+        min-height: 100px;
+        margin-top: 10px;
+        position: relative;
+      }
+      .worldstocks-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .worldstocks-list li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 13px 6px;
+        border-bottom: 1px solid #23283e45;
+        font-size: 1.13em;
+        gap: 14px;
+        transition: background .16s;
+      }
+      .worldstocks-list li:last-child {
+        border-bottom: none;
+      }
+      
+      /* Spinner */
+      .loading-spinner {
+        width: 38px;
+        height: 38px;
+        border: 4px solid #eee;
+        border-top: 4px solid var(--spinner-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 25px auto 10px auto;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      
+      /* News */
+      .news-card {
+        margin-top: 18px;
+        width: 100%;
+        min-height: 110px;
+      }
+      .news-card .news-list {
+        list-style: none;
+        margin: 15px 0 0 0;
+        padding: 0;
+      }
+      .news-card .news-list li {
+        margin-bottom: 13px;
+      }
+      .news-card .news-list a {
+        color: #38a3f1;
+        text-decoration: none;
+        font-weight: 500;
+        transition: text-decoration .2s;
+      }
+      .news-card .news-list a:hover {
+        text-decoration: underline;
+      }
+      
+      /* Responsive Tasarım */
+      @media (max-width: 1050px) {
+        .top-row { flex-direction: column; gap: 18px;}
+        .portfolio-card, .market-card, .favs-card { max-width: unset; min-width: unset; }
+        .center-card { max-width: unset; width: 100%;}
+      }
+      @media (max-width: 600px) {
+        .navbar { flex-direction: column; gap: 7px; padding: 10px 7px; }
+        .navbar-brand { font-size: 1.1em;}
+        .main-content { padding: 2px;}
+        .card { padding: 10px 5px 10px 10px;}
+        .favorites { gap: 12px;}
+      }
+
+
+
+
+
+
+
+
+/* Portfolio Overview Cards */
+.portfolio-overview-row {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  margin-top: 8px;
+}
+
+.overview-card {
+  flex: 1 1 180px;
+  padding: 22px 12px 20px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: var(--secondary-bg);
+  border-radius: var(--card-radius);
+  box-shadow: 0 2px 16px #181a2012;
+  min-width: 180px;
+  min-height: 98px;
+}
+
+.overview-label {
+  font-size: 1.09em;
+  color: #b0b8d1;
+  margin-bottom: 6px;
+  font-weight: 500;
+  letter-spacing: .3px;
+}
+
+.overview-value {
+  font-size: 1.57em;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 3px;
+  color: #fff;
+}
+
+.pie-card {
+  min-width: 180px;
+  min-height: 98px;
+  padding: 16px 10px 13px 10px;
+}
+
+/* Holdings Table */
+.holdings-card {
+  margin-top: 12px;
+  margin-bottom: 24px;
+  background: var(--secondary-bg);
+  border-radius: var(--card-radius);
+  box-shadow: 0 2px 16px #181a2012;
+  padding: 16px 7px 3px 7px;
+}
+
+.portfolio-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 14px;
+  background: transparent;
+  border-radius: 13px;
+  overflow: hidden;
+  font-size: 1em;
+}
+
+.portfolio-table th, .portfolio-table td {
+  padding: 13px 10px;
+  text-align: center;
+}
+
+.portfolio-table thead {
+  background: #222b36;
+}
+
+.portfolio-table tr:nth-child(even) {
+  background: #202534;
+}
+.portfolio-table tr:hover {
+  background: #21283a;
+}
+
+.portfolio-table th {
+  color: #c6daf8;
+  font-weight: 600;
+  letter-spacing: .5px;
+}
+
+/* Portfolio actions (buttons) */
+.portfolio-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+.export-btn, .add-btn {
+  padding: 9px 22px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--accent);
+  color: #fff;
+  transition: background 0.17s, transform 0.15s;
+  font-size: 1em;
+  letter-spacing: 0.2px;
+  outline: none;
+}
+.export-btn:hover, .add-btn:hover {
+  background: #228543;
+  transform: scale(1.04);
+}
+
+
+
+
+
+
+
+
+
+
+
+.news-title {
+  margin: 0 0 25px 0;
+  font-size: 1.7em;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: .3px;
+  text-align: left;
+}
+
+.news-list-long {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin-bottom: 40px;
+}
+
+.news-card-long {
+  background: var(--secondary-bg);
+  border-radius: var(--card-radius);
+  box-shadow: 0 2px 16px #1b1f2615;
+  padding: 22px 22px;
+  transition: box-shadow .18s;
+}
+
+.news-card-long:hover {
+  box-shadow: 0 6px 28px #2182f340;
+}
+
+.news-content {
+  flex: 1;
+}
+
+.news-card-long h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.22em;
+  font-weight: 600;
+}
+
+.news-card-long a {
+  color: #38a3f1;
+  text-decoration: none;
+  transition: color .14s;
+}
+.news-card-long a:hover {
+  text-decoration: underline;
+  color: #52b7ff;
+}
+
+.news-meta {
+  color: #b0b8d1;
+  font-size: .98em;
+  margin-bottom: 7px;
+}
+
+.news-card-long p {
+  color: #c6c8d7;
+  margin: 0;
+  font-size: 1.06em;
+}
+
+@media (max-width: 700px) {
+  .news-card-long {
+    padding: 14px 7px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.stock-detail-modal-content {
+  min-width: 370px; 
+  max-width: 480px;
+  background: var(--secondary-bg);
+  border-radius: 26px;
+  box-shadow: 0 8px 48px #111a;
+  padding: 40px 38px 28px 38px;
+  position: relative;
+  animation: modalin .22s cubic-bezier(.6,.4,0,1);
+  overflow: visible;
+  border: 1.5px solid #262c37;
+}
+
+.stock-detail-modal-header {
+  font-size: 1.5em;
+  font-weight: 800;
+  letter-spacing: .5px;
+  color: #ffe37a;
+  margin-bottom: 2px;
+}
+
+.stock-detail-modal-name {
+  font-size: 1.18em;
+  color: #89d0e6;
+  font-weight: 500;
+  margin-bottom: 14px;
+}
+
+.stock-detail-modal-main-info {
+  margin: 19px 0 10px 0; 
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stock-detail-modal-price {
+  background: linear-gradient(87deg,#23293b 70%,#374a63 110%);
+  border-radius: 13px;
+  padding: 18px 22px;
+  margin-bottom: 10px;
+  font-size: 1.19em;
+  color: #fff;
+  font-weight: 700;
+  display: flex; 
+  align-items: baseline;
+  gap: 17px;
+  box-shadow: 0 2px 16px #2b28385e;
+}
+.stock-detail-modal-price .stock-change {
+  font-size: 1em;
+  font-weight: 600;
+  margin-left: 7px;
+}
+
+.stock-detail-modal-cap, .stock-detail-modal-pe, .stock-detail-modal-div, .stock-detail-modal-hi-lo {
+  font-size: 1.08em;
+  background: #232734cc;
+  border-radius: 8px;
+  display: inline-block;
+  padding: 5px 13px;
+  margin: 0 9px 6px 0;
+  color: #f3f4fe;
+  box-shadow: 0 1px 6px #20242b23;
+}
+
+.stock-detail-modal-meta {
+  color: #bdbdbd;
+  font-size: .97em;
+  margin: 16px 0 12px 0;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.stock-detail-modal-desc {
+  margin: 10px 0 20px 0;
+  color: #bbc7e7;
+  font-size: 1.04em;
+  padding: 6px 0 0 2px;
+  border-left: 3px solid #36a7ff77;
+}
+
+.stock-detail-modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 17px;
+  margin-top: 3px;
+}
+.website-link {
+  color: #44d0ff;
+  font-size: 1.04em;
+  background: #1b273a;
+  border-radius: 7px;
+  padding: 5px 15px;
+  text-decoration: none;
+  transition: background .14s;
+  font-weight: 500;
+}
+.website-link:hover { background: #324a6e; color: #fff; }
+.analyst-badge {
+  background: #38334c;
+  border-radius: 6px; 
+  padding: 4px 14px; 
+  color: #f3ea99; 
+  font-size: 1.04em;
+  box-shadow: 0 1px 8px #e3d59918;
+  letter-spacing: .4px;
+}
+
+.stock-detail-modal-news h4 { 
+  margin-bottom: 7px; 
+  color: #47beff; 
+  font-size: 1.05em; 
+  letter-spacing: .4px; 
+}
+.stock-detail-modal-news ul { 
+  list-style: none; 
+  padding: 0; 
+}
+.stock-detail-modal-news li { 
+  margin-bottom: 6px;
+}
+.stock-detail-modal-news a { 
+  color: #43d6ff; 
+  text-decoration: none;
+  transition: color .13s;
+}
+.stock-detail-modal-news a:hover { 
+  text-decoration: underline; 
+  color: #fff176;
+}
+
+/* Gradient bar */
+.stock-detail-modal-content::after {
+  content: "";
+  display: block;
+  width: 48%;
+  height: 4px;
+  margin: 24px auto 0 auto;
+  border-radius: 6px;
+  background: linear-gradient(90deg,#7ad1ec 0,#ffe37a 100%);
+}
