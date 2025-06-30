@@ -43,12 +43,15 @@ function login($email, $password): string {
     $row = $result->fetchArray(SQLITE3_ASSOC);
     if ($row) { 
         if (password_verify($password, $row['password'])) {
-            return "Login successful.";
+            echo "Login successful.";
+            return True;
         } else {
-            return "Invalid password.";
+            echo "Invalid password.";
+            return False;
         }
     } else {
-        return "User not found.";
+        echo "User not found.";
+        return False;
     }
 }
 

@@ -2,53 +2,10 @@
 
 require_once __DIR__ . '/config.php';
 
-function getStockInfo($symbol) {
-    // Get quote (real-time price)
-    $quoteUrl = "https://finnhub.io/api/v1/quote?symbol=" . urlencode($symbol) . "&token=" . API_KEY;
-    $quoteJson = file_get_contents($quoteUrl);
-    if ($quoteJson === false) {
-        die("Failed to fetch quote data.");
-    }
-    $quoteData = json_decode($quoteJson, true);
 
-    // Get company profile (logo, name)
-    $profileUrl = "https://finnhub.io/api/v1/stock/profile2?symbol=" . urlencode($symbol) . "&token=" . API_KEY;
-    $profileJson = file_get_contents($profileUrl);
-    if ($profileJson === false) {
-        die("Failed to fetch company profile data.");
-    }
-    $profileData = json_decode($profileJson, true);
-
-    // Combine data
-    return [
-        'symbol' => $symbol,
-        'country' => $profileData['country'] ?? 'N/A',
-        'currency' => $profileData['currency'] ?? 'N/A',
-        'name' => $profileData['name'] ?? 'N/A',
-        'logo' => $profileData['logo'] ?? '',
-        'current_price' => $quoteData['c'] ?? 'N/A',
-        'open_price' => $quoteData['o'] ?? 'N/A',
-        'high_price' => $quoteData['h'] ?? 'N/A',
-        'low_price' => $quoteData['l'] ?? 'N/A',
-        'previous_close' => $quoteData['pc'] ?? 'N/A',
-    ];
-}
 
 // Example usage
 
-$symbol = 'AAPL';  // Replace with desired stock symbol
-$stockInfo = getStockInfo($symbol);
-
-// Output the results
-echo "<h2>{$stockInfo['name']} ({$stockInfo['symbol']})</h2>";
-if ($stockInfo['logo']) {
-    echo "<img src=\"{$stockInfo['logo']}\" alt=\"Logo\" width=\"100\"><br>";
-}
-echo "Current Price: {$stockInfo['current_price']}<br>";
-echo "Open: {$stockInfo['open_price']}<br>";
-echo "High: {$stockInfo['high_price']}<br>";
-echo "Low: {$stockInfo['low_price']}<br>";
-echo "Previous Close: {$stockInfo['previous_close']}<br>";
 
 
 
@@ -70,20 +27,127 @@ echo "Previous Close: {$stockInfo['previous_close']}<br>";
 // }
 
 // $to = date('Y-m-d');
-function getHistoricalData($symbol, $from, $to) {
-    // Finnhub needs UNIX timestamps
-    $fromTs = strtotime($from);
-    $toTs = strtotime($to);
-    
-    $url = "https://finnhub.io/api/v1/stock/candle?symbol=" . urlencode($symbol) .
-           "&resolution=D&from=$fromTs&to=$toTs&token={API_KEY}";
+#TODO:
+function getYahooHistoricalData($symbol, $from, $to) {
+    // Convert dates to UNIX timestamps
+$symbol = 'AAPL';
+$from = strtotime("-1 year");
+$to = time();
+$api_key = 'your_finnhub_api_key';
 
-    $json = file_get_contents($url);
-    if ($json === false) {
-        die("Failed to fetch historical data.");
+$url = "https://finnhub.io/api/v1/stock/candle?symbol=$symbol&resolution=D&from=$from&to=$to&token=$api_key";
+
+$response = file_get_contents($url);
+$data = json_decode($response, true);
+
+if ($data && $data['s'] === 'ok') {
+    foreach ($data['t'] as $i => $timestamp) {
+        echo date('Y-m-d', $timestamp) . ": Open: {$data['o'][$i]}, Close: {$data['c'][$i]}<br>";
+    }
+} else {
+    echo "Failed to fetch historical data.";
+}
+
+
+}
+
+// Usage:
+
+
+function getStocks($country="World"): array {
+    $stocks=[];
+
+    // Check if the country exists in the STOCKS dictionary
+    if (array_key_exists($country, STOCKS)) {
+
+        foreach (STOCKS[$country] as $symbol) {
+        $info = getStockInfo1($symbol);
+        if ($info) {
+            $stocks[] = $info;
+        }}
+    
+        return $stocks;
+    } else {
+        echo 'country not found';
+        return []; // Return an empty array if the country is not found
     }
 
-    return json_decode($json, true);
+    
 }
+
+
+function getStockInfo(string $symbol): ?array {
+    $apiKey = '043de246c6e34bc8b644bdaa7f669aca'; // Store this in config or environment variable ideally
+    $url = "https://api.twelvedata.com/quote?symbol={$symbol}&apikey={$apiKey}";
+
+    $response = @file_get_contents($url);
+    if ($response === FALSE) {
+        echo "Failed to fetch stock data for {$symbol}.\n";
+        return null;
+    }
+
+    $data = json_decode($response, true);
+
+    // Check if response contains error
+    if (isset($data['code']) || empty($data['symbol'])) {
+        return null;
+    }
+
+
+    return [
+        'symbol' => $data['symbol'],
+        'name' => $data['name'] ?? '',
+        'exchange' => $data['exchange'] ?? '',
+        'currency' => $data['currency'] ?? '',
+        'current_price' => $data['price'] ?? null,
+        'open_price' => $data['open'] ?? null,
+        'high_price' => $data['high'] ?? null,
+        'low_price' => $data['low'] ?? null,
+        'previous_close' => $data['previous_close'] ?? null,
+        'percent_change' => $data['percent_change'] ?? null
+    ];
+}
+// Change 'World' to any country key you want to fetch stocks for
+
+#print_r(getStocks('USA'));
+
+function getStockInfo1($symbol) {
+    $apiKey = 'Z5OLAZQ3WLN36XNH';
+    $url = "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=$symbol&apikey=$apiKey";
+
+    $response = file_get_contents($url);
+    if (!$response) {
+        echo "Failed to fetch data.";
+        return null;
+    }
+
+    $data = json_decode($response, true);
+    
+    if (!isset($data["Global Quote"])) {
+        return null;
+    }
+
+    $quote = $data["Global Quote"];
+    
+    return [
+        "symbol" => $quote["01. symbol"],
+        "open_price" => $quote["02. open"],
+        "high_price" => $quote["03. high"],
+        "low_price" => $quote["04. low"],
+        "current_price" => $quote["05. price"],
+        "previous_close" => $quote["08. previous close"]
+    ];
+}
+
+$json = file_get_contents('https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=IBM&interval=5min&apikey=demo');
+
+function display($stocks){
+    foreach ($stocks as $stock) {
+        echo $stock['symbol'] .'/';
+    }
+}
+
+// Example usage (uncomment and provide valid $stocks data to test):
+display(getStocks('Germany'));
 
 ?>
