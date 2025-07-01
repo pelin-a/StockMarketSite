@@ -1,19 +1,38 @@
 <?php
 session_start();
+if (isset($_SESSION['user_email'])) {
+    header('Location: Home.php');
+    exit();
+}
+include_once __DIR__ . '/../src/db.php'; 
+include_once __DIR__ . '/../src/User.php'; 
 
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Basit demo için, gerçek kayıt eklenmedi
+    $username = $_POST['username'];
     $firstname = $_POST['firstname'] ?? '';
     $lastname  = $_POST['lastname'] ?? '';
     $email     = $_POST['email'] ?? '';
     $password  = $_POST['password'] ?? '';
 
-    // Pelin buraya veritabanini ekleyebilirsin.
-    // Şimdilik doğrudan Home.php'ye yönlendiriyorum:
-    header('Location: Home.php');
-    exit();
+    $user = new User($username, $password, $email);
+
+    $result = $user->registration($username, $firstname, $lastname, $password, $email);
+
+    if ($result === true) {
+        $_SESSION['user_email'] = $email;
+        
+        header('Location: /app/views/Home.php');
+        exit();
+    } elseif ($result === 2) {
+        $error = 'This username or email already exists.';
+    } else {
+        $error = 'Registration failed';
+    }
+
+    //exit();
 }
 ?>
 
@@ -38,7 +57,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <span>Register with email</span>
             </div>
 
-            <form class="main-login-form" method="POST" action="Register.php">
+            <form class="main-login-form" method="POST" action="/app/views/Register.php">
+                <label for="register_username" class="visually-hidden">Username</label>
+                <input id="register_username" name="username" type="text" placeholder="Username" required>
+
                 <label for="register_firstname" class="visually-hidden">First Name</label>
                 <input id="register_firstname" name="firstname" type="text" placeholder="First Name" required>
                 
@@ -56,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <p style="margin-top: 20px; text-align: center;">
                 Already have an account?
-                <a href="Login.php">Login here</a>
+                <a href="/app/views/Login.php">Login here</a>
             </p>
 
             <?php if (!empty($error)): ?>
@@ -65,4 +87,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 </body>
+<footer class="site-footer">
+  <div class="footer-content">
+    <span>&copy; <?= date('Y') ?> StoX.com. All rights reserved.</span>
+    <span> | </span>
+    <a href="mailto:support@stox.com">Contact Support</a>
+  </div>
+</footer>
 </html>

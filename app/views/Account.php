@@ -1,3 +1,14 @@
+<?php
+session_start();
+if (!isset($_SESSION['user_email'])) {
+    header('Location: Login.php');
+    exit();
+}
+require_once __DIR__ . '/../src/User.php'; // Adjust path if needed
+$userEmail=$_SESSION['user_email'] ?? 'Guest'; 
+// Default to 'Guest' if not logged in
+$userInfo=getUserInfo($userEmail);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +21,11 @@
 
 <!-- Navbar -->
 <nav class="navbar">
-  <div class="navbar-brand">StoX.com</div>
+  <div class="navbar-brand">
+      <a href="/" class="navbar-logo">
+    <img src="/Public/images/LOGO.png" alt="StoX Logo">
+  </a>
+    StoX.com</div>
   <ul class="navbar-links">
     <li><a href="Home.php">Home</a></li>
     <li><a href="Portfolio.php">Portfolio</a></li>
@@ -19,8 +34,8 @@
     <li><a href="StockDetail.php">Stock Detail</a></li>
   </ul>
   <div class="navbar-profile">
-    <span>👤 Betül</span>
-    <a class="logout" href="Login.php">Logout</a>
+    <span><?= $userInfo['username'] ?></span>
+    <a class="logout" href="../src/logout.php">Logout</a>
     <button id="themeSwitcher" title="Switch theme" class="theme-switcher-btn">🌞</button>
   </div>
 </nav>
@@ -31,10 +46,11 @@
   <section class="account-card">
     <div class="account-avatar">B</div>
     <div class="account-info">
-      <h2>Betül</h2>
+      <h2><?= $userInfo['username'] ?></h2>
+      <h4><?= $userInfo['firstname']. ' ' .$userInfo['lastname'] ?></h4>
       <p class="user-badge">Standard Member</p>
-      <p class="user-email">betul@example.com</p>
-      <p class="member-since">Member since: Jan 2024</p>
+      <p class="user-email"><?= $userInfo['email'] ?></p>
+      <p class="member-since">Member since: <?= date('Y-m-d', strtotime($userInfo['created_at'])) ?></p>
     </div>
   </section>
 
@@ -42,7 +58,7 @@
   <div class="account-stats-row">
     <div class="account-stat">
       <span class="stat-label">Last login</span>
-      <span class="stat-value">29 Jun 2025, 16:24</span>
+      <span class="stat-value"><?= date('Y-m-d', strtotime($userInfo['created_at'])) ?></span>
     </div>
     <div class="account-stat">
       <span class="stat-label">Account Type</span>
@@ -189,4 +205,11 @@
 </script>
 
 </body>
+<footer class="site-footer">
+  <div class="footer-content">
+    <span>&copy; <?= date('Y') ?> StoX.com. All rights reserved.</span>
+    <span> | </span>
+    <a href="mailto:support@stox.com">Contact Support</a>
+  </div>
+</footer>
 </html>

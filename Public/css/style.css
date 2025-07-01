@@ -1,3 +1,5 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Ultra&display=swap');
 :root {
     --brand-blue: #2196f3;
     --dark-bg: #181A20;
@@ -735,7 +737,15 @@
   margin: 0;
   font-size: 1.06em;
 }
-
+.news-card-long .news-content p {
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 7.5em; /* Adjust if your line-height is different */
+}
 @media (max-width: 700px) {
   .news-card-long {
     padding: 14px 7px;
@@ -744,16 +754,21 @@
 
 
 
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  font-size: 1.7em;
+  letter-spacing: 1px;
+  gap: 10px; /* space between logo and text */
+  font-family: 'Ultra', 'Montserrat', 'Segoe UI', Arial, sans-serif;
+}
 
+.navbar-logo img {
+  height: 60px;
+  vertical-align: middle;
 
-
-
-
-
-
-
-
-
+}
 
 
 .stock-detail-modal-content {
@@ -917,5 +932,31 @@
   box-shadow: 0 2px 12px #155bb688;
 }
 .register-btn-big:hover {
-  background: #146ac2;
+  background: #1651b8;
+}
+
+.site-footer {
+  background: #181c2f;
+  color: #b0b8d1;
+  text-align: center;
+  padding: 18px 0 12px 0;
+  font-size: 1em;
+  margin-top: 40px;
+  border-top: 1px solid #23284a;
+}
+
+.site-footer .footer-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.site-footer a {
+  color: #38a3f1;
+  text-decoration: none;
+}
+
+.site-footer a:hover {
+  text-decoration: underline;
 }

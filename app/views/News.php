@@ -1,7 +1,15 @@
 
 <?php
+session_start();
+if (!isset($_SESSION['user_email'])) {
+    header('Location: Login.php');
+    exit();
+}
 require_once __DIR__ . '/../src/News.php'; 
-
+require_once __DIR__ . '/../src/User.php';
+$userEmail=$_SESSION['user_email'] ?? 'Guest'; 
+// Default to 'Guest' if not logged in
+$userInfo=getUserInfo($userEmail);
 
 $newsList = getNews();
 ?>
@@ -18,7 +26,11 @@ $newsList = getNews();
 
 <!-- Navbar -->
 <nav class="navbar">
-  <div class="navbar-brand">StoX.com</div>
+  <div class="navbar-brand">
+      <a href="/" class="navbar-logo">
+    <img src="/Public/images/LOGO.png" alt="StoX Logo">
+  </a>
+    StoX.com</div>
   <ul class="navbar-links">
     <li><a href="Home.php">Home</a></li>
     <li><a href="Portfolio.php">Portfolio</a></li>
@@ -27,8 +39,8 @@ $newsList = getNews();
     <li><a href="StockDetail.php">Stock Detail</a></li>
   </ul>
   <div class="navbar-profile">
-    <span>👤 User</span>
-    <a class="logout" href="Login.php">Logout</a>
+    <span><?= $userInfo['username'] ?></span>
+    <a class="logout" href="../src/logout.php">Logout</a>
     <button id="themeSwitcher" title="Switch theme" class="theme-switcher-btn">🌞</button>
   </div>
 </nav>
@@ -53,4 +65,11 @@ $newsList = getNews();
 
 <script src="/Public/js/main.js"></script>
 </body>
+<footer class="site-footer">
+  <div class="footer-content">
+    <span>&copy; <?= date('Y') ?> StoX.com. All rights reserved.</span>
+    <span> | </span>
+    <a href="mailto:support@stox.com">Contact Support</a>
+  </div>
+</footer>
 </html>

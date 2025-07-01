@@ -1,3 +1,17 @@
+<?php
+session_start();
+if (!isset($_SESSION['user_email'])) {
+    header('Location: Login.php');
+    exit();
+}
+require_once __DIR__ . '/../src/User.php';
+require_once __DIR__ . '/../src/Stock.php'; 
+$userEmail=$_SESSION['user_email'] ?? 'Guest'; 
+// Default to 'Guest' if not logged in
+$userInfo=getUserInfo($userEmail);
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +22,11 @@
 </head>
 <body>
 <nav class="navbar">
-  <div class="navbar-brand">StoX.com</div>
+  <div class="navbar-brand">
+      <a href="/" class="navbar-logo">
+    <img src="/Public/images/LOGO.png" alt="StoX Logo">
+  </a>
+    StoX.com</div>
   <ul class="navbar-links">
     <li><a href="Home.php">Home</a></li>
     <li><a href="Portfolio.php">Portfolio</a></li>
@@ -17,9 +35,9 @@
     <li><a href="StockDetail.php" class="active">Stock Detail</a></li>
   </ul>
   <div class="navbar-profile">
-    <span>👤 User</span>
-    <a class="logout" href="Login.php">Logout</a>
-    <button id="themeSwitcher" class="theme-switcher-btn">🌞</button>
+    <span><?= $userInfo['username'] ?></span>
+    <a class="logout" href="../src/logout.php">Logout</a>
+    <button id="themeSwitcher" title="Switch theme" class="theme-switcher-btn">🌞</button>
   </div>
 </nav>
 
@@ -288,4 +306,11 @@ renderStockList('US');
 }
 </style>
 </body>
+<footer class="site-footer">
+  <div class="footer-content">
+    <span>&copy; <?= date('Y') ?> StoX.com. All rights reserved.</span>
+    <span> | </span>
+    <a href="mailto:support@stox.com">Contact Support</a>
+  </div>
+</footer>
 </html>

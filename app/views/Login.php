@@ -1,6 +1,11 @@
 
 <?php
+
 session_start();
+if (isset($_SESSION['user_email'])) {
+    header('Location: Home.php');
+    exit();
+}
 require_once __DIR__ . '/../src/User.php';
 
 $error = '';
@@ -15,14 +20,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $loginResult = $tempUser->login($email, $password);
 
-    if ($loginResult == true) {
+    if ($loginResult === true) {
         $_SESSION['user_email'] = $email;
-        header('Location: Home.php');
-        exit();
+    header('Location: /app/views/Home.php');
+    exit();
     } elseif ($loginResult === 2) {
-        $error = 'Incorrect password.';
+        $error = 'Incorrect password, please try again.';
     } else {
-        $error = 'User not found.';
+        $error = 'User is not found. Please check your email or phone number or register.';
     }
 }
 ?>
@@ -64,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <span>or</span>
             </div>
             
-            <form class="main-login-form" method="POST" action="Login.php">
+            <form class="main-login-form" method="POST" action="/app/views/Login.php">
                 <label for="login_email" class="visually-hidden">Email or phone number</label>
                 <input id="login_email" name="email" type="text" placeholder="Email or phone number" autocomplete="username">
                 
@@ -74,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <button type="submit" class="login-btn">Login</button>
             </form>
 
-            <button class="register-btn-big" onclick="window.location.href='Register.php'">Register</button>
+            <button class="register-btn-big" onclick="window.location.href='/app/views/Register.php'">Register</button>
             
             <!-- Uyarı/hata mesajı alanı -->
         <?php if (!empty($error)): ?>
@@ -89,4 +94,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     });
     </script> -->
 </body>
+
 </html>

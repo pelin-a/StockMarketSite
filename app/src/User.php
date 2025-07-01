@@ -1,5 +1,5 @@
 <?php
-require_once 'db.php';
+require_once __DIR__ . '/db.php'; // Adjust path if needed
 
 // // Now you can use $db directly here
 // $result = $db->query("SELECT * FROM users");
@@ -35,7 +35,7 @@ Class User {
 
 
 
-    function registration($username, $password, $email): string {
+    function registration($username, $firstname,$lastname, $password, $email) {
     $db = getDBConnection();
     $statement= $db-> prepare("SELECT * FROM users WHERE username = :username OR email = :email");
         if (!$statement) {
@@ -46,23 +46,26 @@ Class User {
     $result = $statement->execute();
     $row = $result->fetchArray(SQLITE3_ASSOC);
     if ($row) {
-        return "Username or email already exists.";
+        return 2; // User already exists
     } else {    
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-        $insertStatement = $db->prepare("INSERT INTO users (username, password, email) VALUES (:username, :password, :email)");
+        $insertStatement = $db->prepare("INSERT INTO users (username, firstname, lastname, password, email, created_at) VALUES (:username, :firstname, :lastname, :password, :email, :created_at)");
         $insertStatement->bindValue(":username", $username, SQLITE3_TEXT);
+        $insertStatement->bindValue(":firstname", $firstname, SQLITE3_TEXT);
+        $insertStatement->bindValue(":lastname", $lastname, SQLITE3_TEXT);   
         $insertStatement->bindValue(":password", $hashedPassword, SQLITE3_TEXT);
         $insertStatement->bindValue(":email", $email, SQLITE3_TEXT);
+        $insertStatement->bindValue(":created_at", date('Y-m-d H:i:s'), SQLITE3_TEXT);
         if ($insertStatement->execute()) {
-            return True;
+            return true;
         } else {
-            return False;
+            return false;
         }
     }
     
 }
 
-function login($email, $password): string {
+function login($email, $password) {
     $db = getDBConnection();
     $statement= $db->prepare("SELECT * FROM users WHERE email = :email");
     $statement->bindValue(":email", $email, SQLITE3_TEXT);
@@ -71,17 +74,38 @@ function login($email, $password): string {
     if ($row) { 
         if (password_verify($password, $row['password'])) {
             
-            return True;
+            return true;
         } else {
             
             return 2;
         }
     } else {
         
-        return False;
+        return false;
     }
 }
 }
+
+function getUserInfo($email) {
+    $db = getDBConnection();
+    $statement = $db->prepare('SELECT * FROM users WHERE email = :email');
+    if (!$statement) {
+        return ["error" => "Prepare failed: " . $db->lastErrorMsg()];
+    }
+    $statement->bindValue(":email", $email, SQLITE3_TEXT);
+    $result = $statement->execute();
+    $row = $result->fetchArray(SQLITE3_ASSOC);
+    if ($row) {
+        return $row; // returns associative array (dictionary)
+    } else {
+        return null; // user not found
+    }
+}
+
+
+
+
+
 
 $usr= new User('', '', ''); // Create an instance of User class with empty values
 // You can now use $usr to call methods like $usr->registration() or $usr
@@ -89,5 +113,6 @@ $usr= new User('', '', ''); // Create an instance of User class with empty value
 // $usr -> registration('pelin','pelin', 'pelin@gmail.com')
 
 // print($usr -> login('pelin@gmail.com', 'pelin'));
+
 
 ?>

@@ -1,3 +1,16 @@
+<?php
+session_start();
+if (!isset($_SESSION['user_email'])) {
+    header('Location: Login.php');
+    exit();
+}
+require_once __DIR__ . '/../src/User.php';
+$userEmail=$_SESSION['user_email'] ?? 'Guest'; 
+// Default to 'Guest' if not logged in
+$userInfo=getUserInfo($userEmail);
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +23,11 @@
 
 <!-- Navbar -->
 <nav class="navbar">
-  <div class="navbar-brand">StoX.com</div>
+  <div class="navbar-brand">
+      <a href="/" class="navbar-logo">
+    <img src="/Public/images/LOGO.png" alt="StoX Logo">
+  </a>
+    StoX.com</div>
   <ul class="navbar-links">
     <li><a href="Home.php">Home</a></li>
     <li><a href="Portfolio.php" class="active">Portfolio</a></li>
@@ -19,13 +36,13 @@
     <li><a href="StockDetail.php">Stock Detail</a></li>
   </ul>
   <div class="navbar-profile">
-    <span>👤 User</span>
-    <a class="logout" href="Login.php">Logout</a>
+    <span><?= $userInfo['username'] ?></span>
+    <a class="logout" href="../src/logout.php">Logout</a>
     <button id="themeSwitcher" title="Switch theme" class="theme-switcher-btn">🌞</button>
   </div>
 </nav>
 
-<<main class="main-content">
+<main class="main-content">
 
     <!-- Portfolio Overview Cards -->
     <div class="portfolio-overview-row">
@@ -120,18 +137,27 @@
   </section>
 
   <!-- Latest Transactions -->
-  <section class="card transactions-card">
+  <!-- <section class="card transactions-card">
     <h3>Latest Transactions</h3>
     <ul class="transactions-list">
       <li><b>Bought</b> 2 x <b>TSLA</b> @ €214.00 — <span class="date">29 Jun 2025</span></li>
       <li><b>Sold</b> 5 x <b>BAYN</b> @ €30.00 — <span class="date">27 Jun 2025</span></li>
       <li><b>Bought</b> 10 x <b>AAPL</b> @ €215.00 — <span class="date">15 Jun 2025</span></li>
     </ul>
-  </section>
+  </section> -->
 
  
 
 </body>
+
+<footer class="site-footer">
+  <div class="footer-content">
+    <span>&copy; <?= date('Y') ?> StoX.com. All rights reserved.</span>
+    <span> | </span>
+    <a href="mailto:support@stox.com">Contact Support</a>
+  </div>
+</footer>
+
 </html>
 
 
