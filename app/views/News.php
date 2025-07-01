@@ -1,6 +1,10 @@
 
 <?php
 session_start();
+if (!isset($_SESSION['user_email'])) {
+    header('Location: Login.php');
+    exit();
+}
 require_once __DIR__ . '/../src/News.php'; 
 require_once __DIR__ . '/../src/User.php';
 $userEmail=$_SESSION['user_email'] ?? 'Guest'; 
@@ -22,7 +26,11 @@ $newsList = getNews();
 
 <!-- Navbar -->
 <nav class="navbar">
-  <div class="navbar-brand">StoX.com</div>
+  <div class="navbar-brand">
+      <a href="/" class="navbar-logo">
+    <img src="/Public/images/LOGO.png" alt="StoX Logo">
+  </a>
+    StoX.com</div>
   <ul class="navbar-links">
     <li><a href="Home.php">Home</a></li>
     <li><a href="Portfolio.php">Portfolio</a></li>

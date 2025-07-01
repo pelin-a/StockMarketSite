@@ -1,3 +1,5 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Ultra&display=swap');
 :root {
     --brand-blue: #2196f3;
     --dark-bg: #181A20;
@@ -752,16 +754,21 @@
 
 
 
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  font-size: 1.7em;
+  letter-spacing: 1px;
+  gap: 10px; /* space between logo and text */
+  font-family: 'Ultra', 'Montserrat', 'Segoe UI', Arial, sans-serif;
+}
 
+.navbar-logo img {
+  height: 60px;
+  vertical-align: middle;
 
-
-
-
-
-
-
-
-
+}
 
 
 .stock-detail-modal-content {

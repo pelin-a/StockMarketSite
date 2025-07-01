@@ -1,5 +1,9 @@
 <?php
 session_start();
+if (isset($_SESSION['user_email'])) {
+    header('Location: Home.php');
+    exit();
+}
 include_once __DIR__ . '/../src/db.php'; 
 include_once __DIR__ . '/../src/User.php'; 
 
@@ -15,11 +19,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $user = new User($username, $password, $email);
 
-    $result = $user-> registration($username, $firstname, $lastname, $password, $email);
+    $result = $user->registration($username, $firstname, $lastname, $password, $email);
 
     if ($result === true) {
         $_SESSION['user_email'] = $email;
-        header('Location: Home.php');
+        
+        header('Location: /app/views/Home.php');
         exit();
     } elseif ($result === 2) {
         $error = 'User exists.';
@@ -52,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <span>Register with email</span>
             </div>
 
-            <form class="main-login-form" method="POST" action="Register.php">
+            <form class="main-login-form" method="POST" action="/app/views/Register.php">
                 <label for="register_username" class="visually-hidden">Username</label>
                 <input id="register_username" name="username" type="text" placeholder="Username" required>
 
@@ -73,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <p style="margin-top: 20px; text-align: center;">
                 Already have an account?
-                <a href="Login.php">Login here</a>
+                <a href="/app/views/Login.php">Login here</a>
             </p>
 
             <?php if (!empty($error)): ?>

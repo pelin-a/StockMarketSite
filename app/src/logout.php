@@ -9,15 +9,11 @@ if (isset($_SERVER['HTTP_COOKIE'])) {
     foreach($cookies as $cookie) {
         $parts = explode('=', $cookie);
         $name = trim($parts[0]);
-        // Try deleting with different paths and domains
         setcookie($name, '', time() - 3600, '/');
-        setcookie($name, '', time() - 3600, '/', $_SERVER['HTTP_HOST']);
-        setcookie($name, '', time() - 3600, '/', '', false, true);
-        setcookie($name, '', time() - 3600);
     }
 }
 
-header("Location: /views/Login.php");
+header("Location: /app/views/Login.php");
 exit;
 
 ?>
