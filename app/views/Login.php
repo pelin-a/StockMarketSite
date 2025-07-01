@@ -25,9 +25,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Location: /app/views/Home.php');
     exit();
     } elseif ($loginResult === 2) {
-        $error = 'Incorrect password.';
+        $error = 'Incorrect password, please try again.';
     } else {
-        $error = 'User not found.';
+        $error = 'User is not found. Please check your email or phone number or register.';
     }
 }
 ?>

@@ -47,9 +47,10 @@ $userInfo=getUserInfo($userEmail);
     <div class="account-avatar">B</div>
     <div class="account-info">
       <h2><?= $userInfo['username'] ?></h2>
+      <h4><?= $userInfo['firstname']. ' ' .$userInfo['lastname'] ?></h4>
       <p class="user-badge">Standard Member</p>
       <p class="user-email"><?= $userInfo['email'] ?></p>
-      <p class="member-since">Member since: Jan 2024</p>
+      <p class="member-since">Member since: <?= date('Y-m-d', strtotime($userInfo['created_at'])) ?></p>
     </div>
   </section>
 
@@ -57,7 +58,7 @@ $userInfo=getUserInfo($userEmail);
   <div class="account-stats-row">
     <div class="account-stat">
       <span class="stat-label">Last login</span>
-      <span class="stat-value">29 Jun 2025, 16:24</span>
+      <span class="stat-value"><?= date('Y-m-d', strtotime($userInfo['created_at'])) ?></span>
     </div>
     <div class="account-stat">
       <span class="stat-label">Account Type</span>
