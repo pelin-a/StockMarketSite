@@ -130,7 +130,7 @@ $stocks= [
           $country = $_GET['country'];
           
           
-          require_once '/Users/pelinsualtun/Documents/Stox_Web/app/src/Stock.php'; // your functions file
+          require_once __DIR__ . '/../src/Stock.php'; // your functions file
           $apiKey="043de246c6e34bc8b644bdaa7f669aca";
           //$countrySymbols= getStockSymbolsByCountry($country, $apiKey);
           //$stocksData = getStocks($countrySymbols, $apiKey);
