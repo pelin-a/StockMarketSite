@@ -8,6 +8,7 @@ if (!isset($_SESSION['user_email'])) {
 }
 require_once __DIR__ . '/../src/Stock.php'; 
 require_once __DIR__ . '/../src/User.php';
+require_once __DIR__ . '/../src/config.php';
 $userEmail=$_SESSION['user_email'] ?? 'Guest'; 
 // Default to 'Guest' if not logged in
 $userInfo=getUserInfo($userEmail);
@@ -32,6 +33,7 @@ $stocks= [
         'change_percent' => 0.75,
     ],
 ];
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -93,6 +95,7 @@ $stocks= [
     <!-- Market Overview -->
 <section class="card market-card">
   <h3>Market Overview</h3>
+
   <ul class="market-list">
     <?php foreach ($stocks as $item): ?>
       <?php
@@ -112,6 +115,7 @@ $stocks= [
     <section class="card favs-card">
       <h3>Favorite Stocks</h3>
       <ul class="favorites">
+
         <li>Apple <span>€218.50</span> <b class="profit-up">+1.3%</b></li>
         <li>Deutsche Bank <span>€10.20</span> <b class="profit-down">-0.7%</b></li>
         <li>Tesla <span>€215.80</span> <b class="profit-up">+0.9%</b></li>
@@ -126,46 +130,37 @@ $stocks= [
   <div class="worldstocks-header">
     <form method="GET" action="">
       <label for="countrySelect">Select Country:</label>
-      <select name="country" id="countrySelect" onchange="this.form.submit()">
+      <select name="country" id="countrySelect" onchange="this.form.submit()" >
         <option value="United States" <?= (($_GET['country'] ?? '') === 'United States') ? 'selected' : '' ?>>🇺🇸 USA</option>
         <option value="Germany" <?= (($_GET['country'] ?? '') === 'Germany') ? 'selected' : '' ?>>🇩🇪 Germany</option>
         <option value="Japan" <?= (($_GET['country'] ?? '') === 'Japan') ? 'selected' : '' ?>>🇯🇵 Japan</option>
         <option value="China" <?= (($_GET['country'] ?? '') === 'China') ? 'selected' : '' ?>>🇨🇳 China</option>
         <option value="Canada" <?= (($_GET['country'] ?? '') === 'Canada') ? 'selected' : '' ?>>🇨🇦 Canada</option>
       </select>
+
     </form>
   </div>
   <div class="worldstocks-list-container">
-    <div id="worldStocksLoading" class="loading-spinner" style="display: none;"></div>
+    <div id="worldStocksLoading" class="loading-spinner"></div>
     <ul class="worldstocks-list" id="worldStocksList">
-      <!-- PHP will inject stock list items here after form submit -->
-      <?php
+      <li>fevfgb</li>
+
+// 
+<?php
+ $stocksData = getStocksByCountry("Germany");
+print_r($stocksData);
+?>
+
       if (isset($_GET['country'])) {
           $country = $_GET['country'];
+          print('Selected country: ' . htmlspecialchars($country) . '<br>');
           
-          
-          require_once '/Users/pelinsualtun/Documents/Stox_Web/app/src/Stock.php'; // your functions file
-          $apiKey="043de246c6e34bc8b644bdaa7f669aca";
+           
+          //$apiKey="043de246c6e34bc8b644bdaa7f669aca";
           //$countrySymbols= getStockSymbolsByCountry($country, $apiKey);
           //$stocksData = getStocks($countrySymbols, $apiKey);
-$stocksData = [
-    [
-        'symbol' => 'AAPL',
-        'price' => 200.08,
-        'change_percent' => -0.49,
-    ],
-    [
-        'symbol' => 'MSFT',
-        'price' => 330.55,
-        'change_percent' => 1.12,
-    ],
-    [
-        'symbol' => 'GOOGL',
-        'price' => 2800.35,
-        'change_percent' => 0.75,
-    ],
-];
-
+          $stocksData = getStocksByCountry($country);
+          echo '<pre>efervce</pre>'; 
           if (isset($stocksData['error'])) {
               echo "<li class='text-danger'>Error: " . htmlspecialchars(is_array($stocksData['error']) ? implode(', ', $stocksData['error']) : $stocksData['error']) . "</li>";
           } else {
@@ -185,27 +180,6 @@ $stocksData = [
 
 
 
-  <!-- <section class="card worldstocks-card center-card">
-    <h3>World Stocks</h3>
-    <div class="worldstocks-header">
-      <label for="countrySelect">Select Country:</label>
-      <select id="countrySelect">
-        <option value="usa">🇺🇸 USA</option>
-        <option value="germany">🇩🇪 Germany</option>
-        <option value="japan">🇯🇵 Japan</option>
-        <option value="china">🇨🇳 China</option>
-        <option value="canada">🇨🇦 Canada</option>
-      </select>
-    </div>
-    <div class="worldstocks-list-container">
-      <div id="worldStocksLoading" class="loading-spinner" style="display: none;"></div>
-      <ul class="worldstocks-list" id="worldStocksList">
-         
-      </ul>
-    </div>
-  </section>-->
-
-
   <!-- En altta News bölümü -->
   <section class="card news-card">
     <h3>Latest News</h3>
@@ -219,4 +193,11 @@ $stocksData = [
 
 <script src="/Public/js/main.js"></script>
 </body>
+<footer class="site-footer">
+  <div class="footer-content">
+    <span>&copy; <?= date('Y') ?> StoX.com. All rights reserved.</span>
+    <span> | </span>
+    <a href="mailto:support@stox.com">Contact Support</a>
+  </div>
+</footer>
 </html>

@@ -205,4 +205,11 @@ $userInfo=getUserInfo($userEmail);
 </script>
 
 </body>
+<footer class="site-footer">
+  <div class="footer-content">
+    <span>&copy; <?= date('Y') ?> StoX.com. All rights reserved.</span>
+    <span> | </span>
+    <a href="mailto:support@stox.com">Contact Support</a>
+  </div>
+</footer>
 </html>
