@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: /app/views/Home.php');
         exit();
     } elseif ($result === 2) {
-        $error = 'User exists.';
+        $error = 'This username or email already exists.';
     } else {
         $error = 'Registration failed';
     }
