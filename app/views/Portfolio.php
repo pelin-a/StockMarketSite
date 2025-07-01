@@ -42,7 +42,7 @@ $userInfo=getUserInfo($userEmail);
   </div>
 </nav>
 
-<<main class="main-content">
+<main class="main-content">
 
     <!-- Portfolio Overview Cards -->
     <div class="portfolio-overview-row">
@@ -137,18 +137,27 @@ $userInfo=getUserInfo($userEmail);
   </section>
 
   <!-- Latest Transactions -->
-  <section class="card transactions-card">
+  <!-- <section class="card transactions-card">
     <h3>Latest Transactions</h3>
     <ul class="transactions-list">
       <li><b>Bought</b> 2 x <b>TSLA</b> @ €214.00 — <span class="date">29 Jun 2025</span></li>
       <li><b>Sold</b> 5 x <b>BAYN</b> @ €30.00 — <span class="date">27 Jun 2025</span></li>
       <li><b>Bought</b> 10 x <b>AAPL</b> @ €215.00 — <span class="date">15 Jun 2025</span></li>
     </ul>
-  </section>
+  </section> -->
 
  
 
 </body>
+
+<footer class="site-footer">
+  <div class="footer-content">
+    <span>&copy; <?= date('Y') ?> StoX.com. All rights reserved.</span>
+    <span> | </span>
+    <a href="mailto:support@stox.com">Contact Support</a>
+  </div>
+</footer>
+
 </html>
 
 

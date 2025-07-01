@@ -934,3 +934,29 @@
 .register-btn-big:hover {
   background: #1651b8;
 }
+
+.site-footer {
+  background: #181c2f;
+  color: #b0b8d1;
+  text-align: center;
+  padding: 18px 0 12px 0;
+  font-size: 1em;
+  margin-top: 40px;
+  border-top: 1px solid #23284a;
+}
+
+.site-footer .footer-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.site-footer a {
+  color: #38a3f1;
+  text-decoration: none;
+}
+
+.site-footer a:hover {
+  text-decoration: underline;
+}
