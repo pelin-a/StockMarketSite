@@ -56,6 +56,7 @@ define('STOCKS', [
     ]
     ]
 ) ;
+
 function getStocksByCountry($country){
 
     $stocksData = [
@@ -97,7 +98,6 @@ function getStocksByCountry($country){
 ];
     return $stocksData[$country] ?? [];
 }
-
 
 
 // Usage example:

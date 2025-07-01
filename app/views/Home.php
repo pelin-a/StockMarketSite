@@ -125,7 +125,7 @@ $stocks= [
   </div>
 
   <!-- HEMEN ALTINDA World Stocks -->
-<section class="card worldstocks-card center-card">
+  <section class="card worldstocks-card center-card">
   <h3>World Stocks</h3>
   <div class="worldstocks-header">
     <form method="GET" action="">
@@ -137,32 +137,18 @@ $stocks= [
         <option value="China" <?= (($_GET['country'] ?? '') === 'China') ? 'selected' : '' ?>>🇨🇳 China</option>
         <option value="Canada" <?= (($_GET['country'] ?? '') === 'Canada') ? 'selected' : '' ?>>🇨🇦 Canada</option>
       </select>
-
     </form>
   </div>
   <div class="worldstocks-list-container">
-    <div id="worldStocksLoading" class="loading-spinner"></div>
     <ul class="worldstocks-list" id="worldStocksList">
-      <li>fevfgb</li>
-
-// 
-<?php
- $stocksData = getStocksByCountry("Germany");
-print_r($stocksData);
-?>
-
+      <?php
       if (isset($_GET['country'])) {
           $country = $_GET['country'];
-          print('Selected country: ' . htmlspecialchars($country) . '<br>');
-          
-           
-          //$apiKey="043de246c6e34bc8b644bdaa7f669aca";
-          //$countrySymbols= getStockSymbolsByCountry($country, $apiKey);
-          //$stocksData = getStocks($countrySymbols, $apiKey);
           $stocksData = getStocksByCountry($country);
-          echo '<pre>efervce</pre>'; 
           if (isset($stocksData['error'])) {
               echo "<li class='text-danger'>Error: " . htmlspecialchars(is_array($stocksData['error']) ? implode(', ', $stocksData['error']) : $stocksData['error']) . "</li>";
+          } elseif (empty($stocksData)) {
+              echo "<li>No stocks found for this country.</li>";
           } else {
               foreach ($stocksData as $stock) {
                   echo "<li><strong>" . htmlspecialchars($stock['symbol']) . "</strong>: $"
@@ -177,7 +163,6 @@ print_r($stocksData);
     </ul>
   </div>
 </section>
-
 
 
   <!-- En altta News bölümü -->
