@@ -89,11 +89,11 @@ function getStocksByCountry($country){
         ['symbol' => 'NIO', 'price' => 9.45, 'change_percent' => 2.05],
     ],
     'Japan' => [
-        ['symbol' => '7203.T', 'price' => 2600.00, 'change_percent' => 0.55], // Toyota
-        ['symbol' => '6758.T', 'price' => 13250.00, 'change_percent' => -0.88], // Sony
-        ['symbol' => '9984.T', 'price' => 6500.00, 'change_percent' => 1.20], // SoftBank
-        ['symbol' => '7267.T', 'price' => 875.20, 'change_percent' => 0.45], // Honda
-        ['symbol' => '9432.T', 'price' => 3100.75, 'change_percent' => -0.35], // NTT
+        ['symbol' => 'Toyota', 'price' => 2600.00, 'change_percent' => 0.55], // Toyota
+        ['symbol' => 'Sony', 'price' => 13250.00, 'change_percent' => -0.88], // Sony
+        ['symbol' => 'Softbank', 'price' => 6500.00, 'change_percent' => 1.20], // SoftBank
+        ['symbol' => 'Honda', 'price' => 875.20, 'change_percent' => 0.45], // Honda
+        ['symbol' => 'NTT', 'price' => 3100.75, 'change_percent' => -0.35], // NTT
     ],
 ];
     return $stocksData[$country] ?? [];

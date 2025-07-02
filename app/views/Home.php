@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 
@@ -15,25 +14,9 @@ $userInfo=getUserInfo($userEmail);
 
 $apiKey = "043de246c6e34bc8b644bdaa7f669aca"; // Replace with your real API key
 $symbols = ['AAPL', 'GOOGL', 'MSFT','TSLA', 'AMZN', 'NFLX']; // Example symbols
-//$stocks = getStocks($symbols, $apiKey);
-// $stocks= [
-//     [
-//         'symbol' => 'AAPL',
-//         'price' => 200.08,
-//         'change_percent' => -0.49,
-//     ],
-//     [
-//         'symbol' => 'MSFT',
-//         'price' => 330.55,
-//         'change_percent' => 1.12,
-//     ],
-//     [
-//         'symbol' => 'GOOGL',
-//         'price' => 2800.35,
-//         'change_percent' => 0.75,
-//     ],
-// ];
-$stocks = getStocksByCountry('United States'); // Default to 'United States' if no country is selected
+
+$selectedCountry = $_GET['country'] ?? 'United States';
+$stocks = getStocksByCountry($selectedCountry);
 
 ?>
 <!DOCTYPE html>
@@ -88,7 +71,7 @@ $stocks = getStocksByCountry('United States'); // Default to 'United States' if 
       <div class="portfolio-extra">
         <span>Portfolio Return: <b>+12.4%</b></span>
         <span>|</span>
-        <span>Stocks: <b>8</b></span>
+        <span>Stocks: <b>4</b></span>
         <span>|</span>
         <span>Best: <b>Apple (+4.2%)</b></span>
       </div>
@@ -103,11 +86,15 @@ $stocks = getStocksByCountry('United States'); // Default to 'United States' if 
       <?php
         $changeClass = strpos($item['change_percent'], '-') === 0 ? 'profit-down' : 'profit-up';
       ?>
-      <li>
-        <?php echo htmlspecialchars($item['symbol']); ?>
-        <span><?php echo htmlspecialchars($item['price']); ?></span>
-        <b class="<?php echo $changeClass; ?>"><?php echo htmlspecialchars($item['change_percent']); ?></b>
-      </li>
+<li>
+  <span><?php echo htmlspecialchars($item['symbol']); ?></span>
+  <span style="margin-left: auto; display: flex; align-items: center; gap: 16px;">
+    <span>€<?php echo number_format($item['price'], 2); ?></span>
+    <b class="<?php echo $changeClass; ?>">
+      <?php echo $item['change_percent'] >= 0 ? '+' : ''; ?><?php echo number_format($item['change_percent'], 2); ?>%
+    </b>
+  </span>
+</li>
     <?php endforeach; ?>
   </ul>
 </section>
@@ -116,58 +103,74 @@ $stocks = getStocksByCountry('United States'); // Default to 'United States' if 
     <!-- Favorite Stocks -->
     <section class="card favs-card">
       <h3>Favorite Stocks</h3>
+      <?php
+      // Example favorites; replace with user-specific favorites if needed
+      $favorites = ['AAPL', 'TSLA', 'BMW.DE', 'BAS.DE'];
+      $favoriteStocks = [];
+      foreach ($favorites as $symbol) {
+          foreach ($stocks as $item) {
+              if ($item['symbol'] === $symbol) {
+                  $favoriteStocks[] = $item;
+              }
+          }
+      }
+      ?>
       <ul class="favorites">
-
-        <li>Apple <span>€218.50</span> <b class="profit-up">+1.3%</b></li>
-        <li>Deutsche Bank <span>€10.20</span> <b class="profit-down">-0.7%</b></li>
-        <li>Tesla <span>€215.80</span> <b class="profit-up">+0.9%</b></li>
-        <li>Bayer <span>€29.70</span> <b class="profit-down">-1.2%</b></li>
+      <?php if (count($favoriteStocks) === 0): ?>
+          <li>No favorite stocks found in the current market.</li>
+      <?php else: ?>
+          <?php foreach ($favoriteStocks as $stock): ?>
+              <?php $changeClass = $stock['change_percent'] < 0 ? 'profit-down' : 'profit-up'; ?>
+        <li>
+            <span><?= htmlspecialchars($stock['symbol']) ?></span>
+            <span style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
+                <span>€<?= number_format($stock['price'], 2) ?></span>
+                <b class="<?= $changeClass ?>">
+                    <?= $stock['change_percent'] >= 0 ? '+' : '' ?><?= number_format($stock['change_percent'], 2) ?>%
+                </b>
+            </span>
+        </li>
+          <?php endforeach; ?>
+      <?php endif; ?>
       </ul>
     </section>
   </div>
 
-  <!-- HEMEN ALTINDA World Stocks -->
-  <section class="card worldstocks-card center-card">
+<section class="card worldstocks-card center-card">
   <h3>World Stocks</h3>
   <div class="worldstocks-header">
     <form method="GET" action="">
       <label for="countrySelect">Select Country:</label>
       <select name="country" id="countrySelect" onchange="this.form.submit()" >
-        <option value="United States" <?= (($_GET['country'] ?? '') === 'United States') ? 'selected' : '' ?>>🇺🇸 USA</option>
-        <option value="Germany" <?= (($_GET['country'] ?? '') === 'Germany') ? 'selected' : '' ?>>🇩🇪 Germany</option>
-        <option value="Japan" <?= (($_GET['country'] ?? '') === 'Japan') ? 'selected' : '' ?>>🇯🇵 Japan</option>
-        <option value="China" <?= (($_GET['country'] ?? '') === 'China') ? 'selected' : '' ?>>🇨🇳 China</option>
-        <option value="Canada" <?= (($_GET['country'] ?? '') === 'Canada') ? 'selected' : '' ?>>🇨🇦 Canada</option>
+        <option value="United States" <?= ($selectedCountry === 'United States') ? 'selected' : '' ?>>🇺🇸 USA</option>
+        <option value="Germany" <?= ($selectedCountry === 'Germany') ? 'selected' : '' ?>>🇩🇪 Germany</option>
+        <option value="Japan" <?= ($selectedCountry === 'Japan') ? 'selected' : '' ?>>🇯🇵 Japan</option>
+        <option value="China" <?= ($selectedCountry === 'China') ? 'selected' : '' ?>>🇨🇳 China</option>
+        <option value="Canada" <?= ($selectedCountry === 'Canada') ? 'selected' : '' ?>>🇨🇦 Canada</option>
       </select>
     </form>
   </div>
   <div class="worldstocks-list-container">
-    <div id="worldStocksLoading" class="loading-spinner"></div>
-<ul class="worldstocks-list" id="worldStocksList">
-<?php
-if (isset($_GET['country'])) {
-    $country = $_GET['country'];
-    $stocksbyCountry = getStocksByCountry($country);
-
-    if (isset($stocksbyCountry['error'])) {
-        echo "<li class='text-danger'>Error: " . htmlspecialchars(is_array($stocksData['error']) ? implode(', ', $stocksData['error']) : $stocksData['error']) . "</li>";
-    } elseif (empty($stocksbyCountry)) {
-        echo "<li>No stocks found for this country.</li>";
-    } else {
-        foreach ($stocksbyCountry as $stock) {
-            echo "<li><strong>" . htmlspecialchars($stock['symbol']) . "</strong>: $"
-                . number_format($stock['price'], 2) . " ("
-                . number_format($stock['change_percent'], 2) . "%)</li>";
-        }
-    }
-} else {
-    echo "<li>Please select a country to see stocks.</li>";
-}
-?>
+    <ul class="worldstocks-list" id="worldStocksList">
+<?php if (empty($stocks)): ?>
+    <li>No stocks found for this country.</li>
+<?php else: ?>
+    <?php foreach ($stocks as $stock): ?>
+        <?php $changeClass = $stock['change_percent'] < 0 ? 'profit-down' : 'profit-up'; ?>
+        <li>
+            <span><?= htmlspecialchars($stock['symbol']) ?></span>
+            <span style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
+                <span>€<?= number_format($stock['price'], 2) ?></span>
+                <b class="<?= $changeClass ?>">
+                    <?= $stock['change_percent'] >= 0 ? '+' : '' ?><?= number_format($stock['change_percent'], 2) ?>%
+                </b>
+            </span>
+        </li>
+    <?php endforeach; ?>
+<?php endif; ?>
 </ul>
   </div>
 </section>
-
 
 
 

@@ -477,7 +477,7 @@
         width: 100%;
         min-height: 100px;
         margin-top: 10px;
-        position: relative;
+        position:  relative;
       }
       .worldstocks-list {
         list-style: none;
@@ -487,11 +487,11 @@
       .worldstocks-list li {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        padding: 13px 6px;
+        justify-content: flex-start;
+        padding: 8px 6px;
         border-bottom: 1px solid #23283e45;
         font-size: 1.13em;
-        gap: 14px;
+        gap: 10px;
         transition: background .16s;
       }
       .worldstocks-list li:last-child {
