@@ -33,6 +33,7 @@ $userInfo=getUserInfo($userEmail);
     <li><a href="News.php">News</a></li>
     <li><a href="Account.php">Account</a></li>
     <li><a href="StockDetail.php" class="active">Stock Detail</a></li>
+    <li><a href="Premium.php">Premium</a></li>
   </ul>
   <div class="navbar-profile">
     <span><?= $userInfo['username'] ?></span>
