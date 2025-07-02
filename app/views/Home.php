@@ -142,12 +142,32 @@ $stocks= [
   </div>
   <div class="worldstocks-list-container">
     <div id="worldStocksLoading" class="loading-spinner"></div>
-    <ul class="worldstocks-list" id="worldStocksList">
-      <li>fevfgb</li>
+<ul class="worldstocks-list" id="worldStocksList">
+<?php
+if (isset($_GET['country'])) {
+    $country = $_GET['country'];
+    $stocksData = getStocksByCountry($country);
 
-    </ul>
+    if (isset($stocksData['error'])) {
+        echo "<li class='text-danger'>Error: " . htmlspecialchars(is_array($stocksData['error']) ? implode(', ', $stocksData['error']) : $stocksData['error']) . "</li>";
+    } elseif (empty($stocksData)) {
+        echo "<li>No stocks found for this country.</li>";
+    } else {
+        foreach ($stocksData as $stock) {
+            echo "<li><strong>" . htmlspecialchars($stock['symbol']) . "</strong>: $"
+                . number_format($stock['price'], 2) . " ("
+                . number_format($stock['change_percent'], 2) . "%)</li>";
+        }
+    }
+} else {
+    echo "<li>Please select a country to see stocks.</li>";
+}
+?>
+</ul>
   </div>
 </section>
+
+
 
 
 
