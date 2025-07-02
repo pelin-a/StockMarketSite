@@ -13,16 +13,26 @@ function getStockInfo($symbol, $apiKey, $country) {
     if (!isset($data['close'])) {
         throw new Exception("API Error: " . ($data['message'] ?? 'Unknown error'));
     }
+
     $currency = getCurrencyByCountry($country);
+
+    
     if (!$currency) {
         throw new Exception("Currency not found for country: $country");
     }
-    $price= round($data['close'], 2);
-    $priceConverted= convertCurrency('USD',$currency, $price); // Convert to USD or any other currency as needed
 
+    $price= round($data['close'], 2);
+
+
+   if ($currency !== 'USD') {
+    echo "Converting $price USD to $currency<br>";
+        $priceConverted = convertCurrency('USD', $currency, $price);
+    } else {
+        $priceConverted = $price;
+    }
     return [
         'symbol' => $data['symbol'],
-        'price' => $price,  // <-- use 'close' instead of 'price'
+        'price' => $priceConverted,  // <-- use 'close' instead of 'price'
         'change_percent' => round($data['percent_change'], 2)
     ];
 }
@@ -97,6 +107,18 @@ function getCurrencyByCountry($country) {
 
     return $currencyMap[$country] ?? null;
 }
+function getCurrencySymbol($currencyCode) {
+    $symbols = [
+        'USD' => '$',
+        'EUR' => '€',
+        'CAD' => 'C$',
+        'JPY' => '¥',
+        'CNY' => '¥'
+    ];
+    return $symbols[$currencyCode] ?? $currencyCode;
+}
+
+
 
 
 ?>

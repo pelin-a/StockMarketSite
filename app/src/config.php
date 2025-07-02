@@ -3,7 +3,7 @@
 define('DB_PATH', __DIR__ . '/../stock_app.sqlite3');
 
 // Example: API key for your stock/news API
-define('API_KEY', 'd1cppkhr01qic6lf7e20d1cppkhr01qic6lf7e2g');
+define('API_KEY', '043de246c6e34bc8b644bdaa7f669aca');
 
 define('API_KEY_NEWS', 'pub_999d0506b4f1461badb43e6e9fcdd42c');
 // Example: Site name
