@@ -960,3 +960,47 @@
 .site-footer a:hover {
   text-decoration: underline;
 }
+/* Add to style.css */
+.premium-card {
+  max-width: 420px;
+  margin: 40px auto;
+  padding: 36px 32px;
+  background: var(--secondary-bg, #23284a);
+  border-radius: 18px;
+  box-shadow: 0 4px 32px #111a;
+  text-align: center;
+}
+.premium-features {
+  list-style: none;
+  padding: 0;
+  margin: 22px 0 18px 0;
+  color: #38a3f1;
+  font-size: 1.1em;
+}
+.premium-features li {
+  margin-bottom: 8px;
+}
+.premium-price {
+  font-size: 2.2em;
+  font-weight: bold;
+  margin: 18px 0 10px 0;
+  color: #ffd700;
+}
+.premium-btn {
+  background: #38a3f1;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 32px;
+  font-size: 1.1em;
+  cursor: pointer;
+  margin-top: 16px;
+  transition: background 0.2s;
+}
+.premium-btn:hover {
+  background: #52b7ff;
+}
+.premium-note {
+  color: #b0b8d1;
+  font-size: 0.98em;
+  margin-top: 18px;}

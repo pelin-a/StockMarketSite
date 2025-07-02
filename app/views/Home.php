@@ -16,23 +16,24 @@ $userInfo=getUserInfo($userEmail);
 $apiKey = "043de246c6e34bc8b644bdaa7f669aca"; // Replace with your real API key
 $symbols = ['AAPL', 'GOOGL', 'MSFT','TSLA', 'AMZN', 'NFLX']; // Example symbols
 //$stocks = getStocks($symbols, $apiKey);
-$stocks= [
-    [
-        'symbol' => 'AAPL',
-        'price' => 200.08,
-        'change_percent' => -0.49,
-    ],
-    [
-        'symbol' => 'MSFT',
-        'price' => 330.55,
-        'change_percent' => 1.12,
-    ],
-    [
-        'symbol' => 'GOOGL',
-        'price' => 2800.35,
-        'change_percent' => 0.75,
-    ],
-];
+// $stocks= [
+//     [
+//         'symbol' => 'AAPL',
+//         'price' => 200.08,
+//         'change_percent' => -0.49,
+//     ],
+//     [
+//         'symbol' => 'MSFT',
+//         'price' => 330.55,
+//         'change_percent' => 1.12,
+//     ],
+//     [
+//         'symbol' => 'GOOGL',
+//         'price' => 2800.35,
+//         'change_percent' => 0.75,
+//     ],
+// ];
+$stocks = getStocksByCountry('United States'); // Default to 'United States' if no country is selected
 
 ?>
 <!DOCTYPE html>
@@ -58,6 +59,7 @@ $stocks= [
     <li><a href="News.php">News</a></li>
     <li><a href="Account.php">Account</a></li>
     <li><a href="StockDetail.php">Stock Detail</a></li>
+    <li><a href="Premium.php">Premium</a></li>
   </ul>
   <div class="navbar-profile">
     <span><?= $userInfo['username'] ?></span>
@@ -146,14 +148,14 @@ $stocks= [
 <?php
 if (isset($_GET['country'])) {
     $country = $_GET['country'];
-    $stocksData = getStocksByCountry($country);
+    $stocksbyCountry = getStocksByCountry($country);
 
-    if (isset($stocksData['error'])) {
+    if (isset($stocksbyCountry['error'])) {
         echo "<li class='text-danger'>Error: " . htmlspecialchars(is_array($stocksData['error']) ? implode(', ', $stocksData['error']) : $stocksData['error']) . "</li>";
-    } elseif (empty($stocksData)) {
+    } elseif (empty($stocksbyCountry)) {
         echo "<li>No stocks found for this country.</li>";
     } else {
-        foreach ($stocksData as $stock) {
+        foreach ($stocksbyCountry as $stock) {
             echo "<li><strong>" . htmlspecialchars($stock['symbol']) . "</strong>: $"
                 . number_format($stock['price'], 2) . " ("
                 . number_format($stock['change_percent'], 2) . "%)</li>";
