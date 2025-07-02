@@ -145,35 +145,6 @@ $stocks= [
     <ul class="worldstocks-list" id="worldStocksList">
       <li>fevfgb</li>
 
-// 
-<?php
- $stocksData = getStocksByCountry("Germany");
-print_r($stocksData);
-?>
-
-      if (isset($_GET['country'])) {
-          $country = $_GET['country'];
-          print('Selected country: ' . htmlspecialchars($country) . '<br>');
-          
-           
-          //$apiKey="043de246c6e34bc8b644bdaa7f669aca";
-          //$countrySymbols= getStockSymbolsByCountry($country, $apiKey);
-          //$stocksData = getStocks($countrySymbols, $apiKey);
-          $stocksData = getStocksByCountry($country);
-          echo '<pre>efervce</pre>'; 
-          if (isset($stocksData['error'])) {
-              echo "<li class='text-danger'>Error: " . htmlspecialchars(is_array($stocksData['error']) ? implode(', ', $stocksData['error']) : $stocksData['error']) . "</li>";
-          } else {
-              foreach ($stocksData as $stock) {
-                  echo "<li><strong>" . htmlspecialchars($stock['symbol']) . "</strong>: $"
-                      . number_format($stock['price'], 2) . " ("
-                      . number_format($stock['change_percent'], 2) . "%)</li>";
-              }
-          }
-      } else {
-          echo "<li>Please select a country to see stocks.</li>";
-      }
-      ?>
     </ul>
   </div>
 </section>
