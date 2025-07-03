@@ -100,8 +100,6 @@ function getStocksByCountry($country){
 }
 
 
-// Usage example:
-// print_r(STOCKS['Germany']);
 ?>
 
 
