@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 if (!isset($_SESSION['user_email'])) {
@@ -8,10 +7,9 @@ if (!isset($_SESSION['user_email'])) {
 require_once __DIR__ . '/../src/News.php'; 
 require_once __DIR__ . '/../src/User.php';
 $userEmail=$_SESSION['user_email'] ?? 'Guest'; 
-// Default to 'Guest' if not logged in
 $userInfo=getUserInfo($userEmail);
 
-$newsList = getNews();
+$newsList = getFinnhubNews('general', 6);
 ?>
 
 <!DOCTYPE html>
@@ -30,7 +28,7 @@ $newsList = getNews();
       <a href="/" class="navbar-logo">
     <img src="/Public/images/LOGO.png" alt="StoX Logo">
   </a>
-    StoX.com</div>
+    </div>
   <ul class="navbar-links">
     <li><a href="Home.php">Home</a></li>
     <li><a href="Portfolio.php">Portfolio</a></li>
@@ -53,10 +51,22 @@ $newsList = getNews();
 <div class="news-list-long">
   <?php foreach ($newsList as $news): ?>
     <article class="news-card-long">
+      <?php if (!empty($news['image'])): ?>
+        <div class="news-img-wrap">
+          <img src="<?= htmlspecialchars($news['image']) ?>" alt="news image" class="news-img">
+        </div>
+      <?php endif; ?>
       <div class="news-content">
-        <h3><a href="<?php echo htmlspecialchars($news['url']); ?>"><?php echo htmlspecialchars($news['title']); ?></a></h3>
-        <div class="news-meta"><?php echo htmlspecialchars($news['category']); ?> • <?php echo htmlspecialchars($news['date']); ?></div>
-        <p><?php echo htmlspecialchars($news['summary']); ?></p>
+        <h3>
+          <a href="<?= htmlspecialchars($news['url']) ?>" target="_blank" rel="noopener">
+            <?= htmlspecialchars($news['title']) ?>
+          </a>
+        </h3>
+        <div class="news-meta">
+          <?= !empty($news['source']) ? htmlspecialchars($news['source']) . ' • ' : '' ?>
+          <?= isset($news['date']) ? htmlspecialchars($news['date']) : '' ?>
+        </div>
+        <p><?= htmlspecialchars($news['summary']) ?></p>
       </div>
     </article>
   <?php endforeach; ?>

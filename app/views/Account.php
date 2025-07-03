@@ -25,7 +25,7 @@ $userInfo=getUserInfo($userEmail);
       <a href="/" class="navbar-logo">
     <img src="/Public/images/LOGO.png" alt="StoX Logo">
   </a>
-    StoX.com</div>
+    </div>
   <ul class="navbar-links">
     <li><a href="Home.php">Home</a></li>
     <li><a href="Portfolio.php">Portfolio</a></li>

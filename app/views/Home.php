@@ -41,7 +41,7 @@ $currency = $_GET['currency'] ?? 'USD';
       <a href="/" class="navbar-logo">
     <img src="/Public/images/LOGO.png" alt="StoX Logo">
   </a>
-    StoX.com</div>
+    </div>
   <ul class="navbar-links">
     <li><a href="Home.php" class="active">Home</a></li>
     <li><a href="Portfolio.php">Portfolio</a></li>
@@ -74,6 +74,48 @@ if ($currency != 'USD'){
   $totalValue = convertCurrency('USD', $currency, number_format($totalValue, 2));
   $dailyChange = convertCurrency('USD', $currency, number_format($dailyChange, 2));
 }?>
+
+<section class="card worldstocks-card center-card">
+  <h3>World Stocks</h3>
+  <div class="worldstocks-header">
+    <form method="GET" action="">
+      <label for="countrySelect">Select Country:</label>
+      <select name="country" id="countrySelect" onchange="this.form.submit()" >
+        <option value="United States" <?= ($selectedCountry === 'United States') ? 'selected' : '' ?>>🇺🇸 USA</option>
+        <option value="Germany" <?= ($selectedCountry === 'Germany') ? 'selected' : '' ?>>🇩🇪 Germany</option>
+        <option value="Japan" <?= ($selectedCountry === 'Japan') ? 'selected' : '' ?>>🇯🇵 Japan</option>
+        <option value="China" <?= ($selectedCountry === 'China') ? 'selected' : '' ?>>🇨🇳 China</option>
+        <option value="Canada" <?= ($selectedCountry === 'Canada') ? 'selected' : '' ?>>🇨🇦 Canada</option>
+      </select>
+    </form>
+  </div>
+  <div class="worldstocks-list-container">
+    <ul class="worldstocks-list" id="worldStocksList">
+<?php if (empty($stocks)): ?>
+    <li>No stocks found for this country.</li>
+<?php else: ?>
+    <?php foreach ($stocks as $stock): ?>
+        <?php $changeClass = $stock['change_percent'] < 0 ? 'profit-down' : 'profit-up'; 
+        if ($currency != 'USD') {
+            $price = convertCurrency('USD', $currency, number_format($stock['price'], 2)); // Assuming you have a function to convert currency
+        } else {
+            $price = number_format($stock['price'], 2);
+        } ?>
+        
+        <li>
+            <span><?= htmlspecialchars($stock['symbol']) ?></span>
+            <span style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
+                <span><?= $symbol . $price ?></span>
+                <b class="<?= $changeClass ?>">
+                    <?= $stock['change_percent'] >= 0 ? '+' : '' ?><?= number_format($stock['change_percent'], 2) ?>%
+                </b>
+            </span>
+        </li>
+    <?php endforeach; ?>
+<?php endif; ?>
+</ul>
+  </div>
+</section>
 
   <!-- Üstte üç kart yan yana -->
   <div class="top-row">
@@ -161,47 +203,6 @@ if ($currency != 'USD'){
     </section>
   </div>
 
-<section class="card worldstocks-card center-card">
-  <h3>World Stocks</h3>
-  <div class="worldstocks-header">
-    <form method="GET" action="">
-      <label for="countrySelect">Select Country:</label>
-      <select name="country" id="countrySelect" onchange="this.form.submit()" >
-        <option value="United States" <?= ($selectedCountry === 'United States') ? 'selected' : '' ?>>🇺🇸 USA</option>
-        <option value="Germany" <?= ($selectedCountry === 'Germany') ? 'selected' : '' ?>>🇩🇪 Germany</option>
-        <option value="Japan" <?= ($selectedCountry === 'Japan') ? 'selected' : '' ?>>🇯🇵 Japan</option>
-        <option value="China" <?= ($selectedCountry === 'China') ? 'selected' : '' ?>>🇨🇳 China</option>
-        <option value="Canada" <?= ($selectedCountry === 'Canada') ? 'selected' : '' ?>>🇨🇦 Canada</option>
-      </select>
-    </form>
-  </div>
-  <div class="worldstocks-list-container">
-    <ul class="worldstocks-list" id="worldStocksList">
-<?php if (empty($stocks)): ?>
-    <li>No stocks found for this country.</li>
-<?php else: ?>
-    <?php foreach ($stocks as $stock): ?>
-        <?php $changeClass = $stock['change_percent'] < 0 ? 'profit-down' : 'profit-up'; 
-        if ($currency != 'USD') {
-            $price = convertCurrency('USD', $currency, number_format($stock['price'], 2)); // Assuming you have a function to convert currency
-        } else {
-            $price = number_format($stock['price'], 2);
-        } ?>
-        
-        <li>
-            <span><?= htmlspecialchars($stock['symbol']) ?></span>
-            <span style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
-                <span><?= $symbol . $price ?></span>
-                <b class="<?= $changeClass ?>">
-                    <?= $stock['change_percent'] >= 0 ? '+' : '' ?><?= number_format($stock['change_percent'], 2) ?>%
-                </b>
-            </span>
-        </li>
-    <?php endforeach; ?>
-<?php endif; ?>
-</ul>
-  </div>
-</section>
 
 
 

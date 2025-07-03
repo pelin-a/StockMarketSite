@@ -3,45 +3,79 @@
 require_once __DIR__ . '/config.php';
 
 
+// Finnhub.io version for stock info
+
 
 function getStockInfo($symbol, $apiKey, $country) {
-    $url = "https://api.twelvedata.com/quote?symbol=$symbol&apikey=$apiKey";
-    $json = file_get_contents($url);
-    $data = json_decode($json, true);
+    // Finnhub quote endpoint
+    $quoteUrl = "https://finnhub.io/api/v1/quote?symbol=" . urlencode($symbol) . "&token=" . urlencode($apiKey);
+    $profileUrl = "https://finnhub.io/api/v1/stock/profile2?symbol=" . urlencode($symbol) . "&token=" . urlencode($apiKey);
 
-    // Handle possible API errors
-    if (!isset($data['close'])) {
-        throw new Exception("API Error: " . ($data['message'] ?? 'Unknown error'));
+    $quoteJson = @file_get_contents($quoteUrl);
+    if ($quoteJson === false) {
+        throw new Exception("API Error: Failed to fetch quote data for $symbol");
+    }
+    $quote = json_decode($quoteJson, true);
+
+    $profileJson = @file_get_contents($profileUrl);
+    if ($profileJson === false) {
+        throw new Exception("API Error: Failed to fetch profile data for $symbol");
+    }
+    $profile = json_decode($profileJson, true);
+
+    if (!isset($quote['c'])) {
+        throw new Exception("API Error: Invalid quote data for $symbol");
     }
 
     $currency = getCurrencyByCountry($country);
-
-    
     if (!$currency) {
         throw new Exception("Currency not found for country: $country");
     }
 
-    $price= round($data['close'], 2);
-
-
-   if ($currency !== 'USD') {
-    echo "Converting $price USD to $currency<br>";
-        $priceConverted = convertCurrency('USD', $currency, $price);
-    } else {
-        $priceConverted = $price;
+    $price = isset($quote['c']) ? round($quote['c'], 2) : null;
+    $originalCurrency = $profile['currency'] ?? 'USD';
+    $priceConverted = $price;
+    if ($price !== null && $originalCurrency !== $currency) {
+        echo "Converting $price $originalCurrency to $currency<br>";
+        $priceConverted = convertCurrency($originalCurrency, $currency, $price);
     }
+
+    // Calculate change and percent change if possible
+    $previousClose = $quote['pc'] ?? null;
+    $change = null;
+    $changePercent = null;
+    if ($price !== null && $previousClose !== null) {
+        $change = round($price - $previousClose, 2);
+        if ($previousClose != 0) {
+            $changePercent = round(($change / $previousClose) * 100, 2);
+        }
+    }
+
     return [
-        'symbol' => $data['symbol'],
-        'price' => $priceConverted,  // <-- use 'close' instead of 'price'
-        'change_percent' => round($data['percent_change'], 2)
+        'symbol' => $profile['ticker'] ?? $symbol,
+        'name' => $profile['name'] ?? null,
+        'price' => $priceConverted,
+        'currency' => $currency,
+        'open' => $quote['o'] ?? null,
+        'high' => $quote['h'] ?? null,
+        'low' => $quote['l'] ?? null,
+        'previous_close' => $previousClose,
+        'change' => $change,
+        'change_percent' => $changePercent,
+        'volume' => $quote['v'] ?? null,
+        'exchange' => $profile['exchange'] ?? null,
+        'market_cap' => $profile['marketCapitalization'] ?? null,
+        'logo' => $profile['logo'] ?? null,
+        'industry' => $profile['finnhubIndustry'] ?? null,
+        'country' => $profile['country'] ?? null,
+        'website' => $profile['weburl'] ?? null,
     ];
 }
 
 function getStocks($symbols, $apiKey, $country) {
     $result = [];
-    // Limit to 3 symbols max
+    // Limit to 4 symbols max
     $symbols = array_slice($symbols, 0, 4);
-
     foreach ($symbols as $symbol) {
         $result[] = getStockInfo($symbol, $apiKey, $country);
         sleep(1); // avoid rapid requests

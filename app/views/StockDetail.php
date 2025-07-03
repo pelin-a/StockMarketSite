@@ -16,7 +16,7 @@ $userInfo=getUserInfo($userEmail);
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>StoX.com | Stock Detail</title>
+  <title>| Stock Detail</title>
   <link rel="stylesheet" href="/Public/css/style.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
@@ -26,7 +26,7 @@ $userInfo=getUserInfo($userEmail);
       <a href="/" class="navbar-logo">
     <img src="/Public/images/LOGO.png" alt="StoX Logo">
   </a>
-    StoX.com</div>
+    </div>
   <ul class="navbar-links">
     <li><a href="Home.php">Home</a></li>
     <li><a href="Portfolio.php">Portfolio</a></li>

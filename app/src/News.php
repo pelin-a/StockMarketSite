@@ -1,64 +1,37 @@
 <?php
-// Example function to fetch news
-// function getNews() {
-//     return [
-//         [
-//             'title' => 'BIST100 hits record: Which stocks stood out?',
-//             'date' => '30 Jun 2025',
-//             'category' => 'Stock Market',
-//             'summary' => 'BIST100 reached an all-time high today, driven by gains in banking and technology stocks. Experts believe the uptrend may continue as investor confidence grows...',
-//             'url' => '#'
-//         ],
-//         [
-//             'title' => 'Central Bank announced rate decision, markets respond',
-//             'date' => '30 Jun 2025',
-//             'category' => 'Economy',
-//             'summary' => 'The Central Bank kept the interest rate unchanged, prompting mixed reactions in the markets. Analysts expect volatility in the coming weeks...',
-//             'url' => '#'
-//         ],
-//     ];
-// }
-
-//TODO: add new API key and function to fetch newsS
 require_once __DIR__ . '/config.php';
-function getNews($country = 'us', $limit = 10): array {
-    $apiKey = API_KEY_NEWS; // Replace with your API key
-    $url = "https://newsdata.io/api/1/news?apikey=$apiKey&country=$country&q=ETF&category=business&language=en";
+function getFinnhubNews($category = 'general', $limit = 10) {
+    $apiKey = API_KEY; // Make sure this is defined in your config.php
 
+    // Finnhub "general news" endpoint
+    $url = "https://finnhub.io/api/v1/news?category=$category&token=$apiKey";
     $response = @file_get_contents($url);
+
     if (!$response) {
         echo "Failed to fetch news.";
         return [];
     }
 
     $data = json_decode($response, true);
-    if (!isset($data['results'])) return [];
+    if (!is_array($data)) return [];
 
     $newsList = [];
-    $maxFetch = 20;
-    $fetched = 0;
-
-    foreach ($data['results'] as $item) {
-        if ($fetched >= $maxFetch) break;
-
-        // Check for all required fields
+    foreach ($data as $item) {
         if (
-            !empty($item['title']) &&
-            !empty($item['pubDate']) &&
-            !empty($item['category']) &&
-            !empty($item['description']) &&
-            !empty($item['link'])
+            !empty($item['headline']) &&
+            !empty($item['datetime']) &&
+            !empty($item['summary']) &&
+            !empty($item['url'])
         ) {
             $newsList[] = [
-                'title'    => $item['title'],
-                'date'     => $item['pubDate'],
-                'category' => $item['category'][0],
-                'summary'  => $item['description'],
-                'url'      => $item['link'],
+                'title'    => $item['headline'],
+                'date'     => date('Y-m-d H:i', $item['datetime']),
+                'summary'  => $item['summary'],
+                'url'      => $item['url'],
+                'source'   => $item['source'] ?? '',
+                'image'    => $item['image'] ?? '',
             ];
         }
-
-        $fetched++;
         if (count($newsList) >= $limit) break;
     }
 
