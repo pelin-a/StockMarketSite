@@ -106,11 +106,7 @@ function getStockSymbolsByCountry($country, $apiKey) {
         return ["error" => "Unexpected API response."];
     }
 }
-// Example usage
-// Replace with your real API key
 
-
- // For testing, you can remove this later
 
 function convertCurrency($from, $to, $amount) {
     $url = "https://api.frankfurter.app/latest?amount=$amount&from=$from&to=$to";
@@ -151,9 +147,6 @@ function getCurrencySymbol($currencyCode) {
     ];
     return $symbols[$currencyCode] ?? $currencyCode;
 }
-
-
-//print_r(getStocks(['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA'], API_KEY, 'United States'));
 
 ?>
 

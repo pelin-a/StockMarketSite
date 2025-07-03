@@ -4,6 +4,7 @@ define('DB_PATH', __DIR__ . '/../stock_app.sqlite3');
 
 // Example: API key for your stock/news API
 define('API_KEY', 'd1jdqfpr01qkl9jbmjq0d1jdqfpr01qkl9jbmjqg');
+
 // Example: Site name
 define('SITE_NAME', 'Stox Website');
 define('COUNTRY_SYMBOLS', [
@@ -95,7 +96,6 @@ function getStocksByCountry($country){
     ];
     return $stocksData[$country] ?? [];
 }
-
 
 ?>
 
