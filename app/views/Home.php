@@ -16,8 +16,14 @@ $apiKey = "043de246c6e34bc8b644bdaa7f669aca"; // Replace with your real API key
 $symbols = ['AAPL', 'GOOGL', 'MSFT','TSLA', 'AMZN', 'NFLX']; // Example symbols
 
 $selectedCountry = $_GET['country'] ?? 'United States';
+if($selectedCountry==='United States'){
+  $stocks= getStocks($symbols, API_KEY, $selectedCountry);
+}
+else{
 $stocks = getStocksByCountry($selectedCountry);
-
+}
+$stocksOverview=getStocks($symbols, API_KEY, 'United States');
+$currency = $_GET['currency'] ?? 'USD'; 
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -45,6 +51,15 @@ $stocks = getStocksByCountry($selectedCountry);
     <li><a href="Premium.php">Premium</a></li>
   </ul>
   <div class="navbar-profile">
+        <form method="GET" action="" style="display:inline;">
+      <select name="currency" id="currencySelect" onchange="this.form.submit()" style="margin-right: 12px;">
+        <option value="USD" <?= (($_GET['currency'] ?? 'USD') === 'USD') ? 'selected' : '' ?>>USD ($)</option>
+        <option value="EUR" <?= (($_GET['currency'] ?? '') === 'EUR') ? 'selected' : '' ?>>EUR (€)</option>
+        <option value="CAD" <?= (($_GET['currency'] ?? '') === 'CAD') ? 'selected' : '' ?>>CAD (C$)</option>
+        <option value="JPY" <?= (($_GET['currency'] ?? '') === 'JPY') ? 'selected' : '' ?>>JPY (¥)</option>
+        <option value="CNY" <?= (($_GET['currency'] ?? '') === 'CNY') ? 'selected' : '' ?>>CNY (¥)</option>
+      </select>
+    </form>
     <span><?= $userInfo['username'] ?></span>
     <a class="logout" href="../src/logout.php">Logout</a>
     <button id="themeSwitcher" title="Switch theme" class="theme-switcher-btn">🌞</button>
@@ -52,6 +67,13 @@ $stocks = getStocksByCountry($selectedCountry);
 </nav>
 
 <main class="main-content">
+<?php $totalValue= 21300;
+$dailyChange= 245; 
+$symbol = getCurrencySymbol($currency);
+if ($currency != 'USD'){
+  $totalValue = convertCurrency('USD', $currency, number_format($totalValue, 2));
+  $dailyChange = convertCurrency('USD', $currency, number_format($dailyChange, 2));
+}?>
 
   <!-- Üstte üç kart yan yana -->
   <div class="top-row">
@@ -61,11 +83,11 @@ $stocks = getStocksByCountry($selectedCountry);
       <div class="portfolio-summary">
         <div class="total-value">
           <span>Total Value</span>
-          <strong>€21,300</strong>
+          <strong><?= $symbol.$totalValue ?></strong>
         </div>
         <div class="profit">
           <span>Daily Change</span>
-          <strong class="profit-up">+€245</strong>
+          <strong class="profit-up"><?= $symbol . $dailyChange?></strong>
         </div>
       </div>
       <div class="portfolio-extra">
@@ -82,14 +104,19 @@ $stocks = getStocksByCountry($selectedCountry);
   <h3>Market Overview</h3>
 
   <ul class="market-list">
-    <?php foreach ($stocks as $item): ?>
+    <?php foreach ($stocksOverview as $item): ?>
       <?php
         $changeClass = strpos($item['change_percent'], '-') === 0 ? 'profit-down' : 'profit-up';
+        if ($currency != 'USD') {
+            $price = convertCurrency('USD', $currency, number_format($item['price'], 2)); // Assuming you have a function to convert currency
+        } else {
+            $price = number_format($item['price'], 2);
+        }
       ?>
 <li>
   <span><?php echo htmlspecialchars($item['symbol']); ?></span>
   <span style="margin-left: auto; display: flex; align-items: center; gap: 16px;">
-    <span>€<?php echo number_format($item['price'], 2); ?></span>
+<span><?= $symbol . $price; ?></span>
     <b class="<?php echo $changeClass; ?>">
       <?php echo $item['change_percent'] >= 0 ? '+' : ''; ?><?php echo number_format($item['change_percent'], 2); ?>%
     </b>
@@ -106,25 +133,23 @@ $stocks = getStocksByCountry($selectedCountry);
       <?php
       // Example favorites; replace with user-specific favorites if needed
       $favorites = ['AAPL', 'TSLA', 'BMW.DE', 'BAS.DE'];
-      $favoriteStocks = [];
-      foreach ($favorites as $symbol) {
-          foreach ($stocks as $item) {
-              if ($item['symbol'] === $symbol) {
-                  $favoriteStocks[] = $item;
-              }
-          }
-      }
+      $favoriteStocks = getFavStocks();
       ?>
       <ul class="favorites">
       <?php if (count($favoriteStocks) === 0): ?>
           <li>No favorite stocks found in the current market.</li>
       <?php else: ?>
           <?php foreach ($favoriteStocks as $stock): ?>
-              <?php $changeClass = $stock['change_percent'] < 0 ? 'profit-down' : 'profit-up'; ?>
+              <?php $changeClass = $stock['change_percent'] < 0 ? 'profit-down' : 'profit-up'; 
+              if ($currency != 'USD') {
+            $price = convertCurrency('USD', $currency, number_format($stock['price'], 2)); // Assuming you have a function to convert currency
+        }  else{
+          $price = number_format($stock['price'], 2);
+        }?>
         <li>
             <span><?= htmlspecialchars($stock['symbol']) ?></span>
             <span style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
-                <span>€<?= number_format($stock['price'], 2) ?></span>
+                <span> <?=  $symbol. $price ?></span>
                 <b class="<?= $changeClass ?>">
                     <?= $stock['change_percent'] >= 0 ? '+' : '' ?><?= number_format($stock['change_percent'], 2) ?>%
                 </b>
@@ -156,11 +181,17 @@ $stocks = getStocksByCountry($selectedCountry);
     <li>No stocks found for this country.</li>
 <?php else: ?>
     <?php foreach ($stocks as $stock): ?>
-        <?php $changeClass = $stock['change_percent'] < 0 ? 'profit-down' : 'profit-up'; ?>
+        <?php $changeClass = $stock['change_percent'] < 0 ? 'profit-down' : 'profit-up'; 
+        if ($currency != 'USD') {
+            $price = convertCurrency('USD', $currency, number_format($stock['price'], 2)); // Assuming you have a function to convert currency
+        } else {
+            $price = number_format($stock['price'], 2);
+        } ?>
+        
         <li>
             <span><?= htmlspecialchars($stock['symbol']) ?></span>
             <span style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
-                <span>€<?= number_format($stock['price'], 2) ?></span>
+                <span><?= $symbol . $price ?></span>
                 <b class="<?= $changeClass ?>">
                     <?= $stock['change_percent'] >= 0 ? '+' : '' ?><?= number_format($stock['change_percent'], 2) ?>%
                 </b>
