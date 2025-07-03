@@ -40,7 +40,7 @@ function getStockInfo($symbol, $apiKey, $country) {
 function getStocks($symbols, $apiKey, $country) {
     $result = [];
     // Limit to 3 symbols max
-    $symbols = array_slice($symbols, 0, 3);
+    $symbols = array_slice($symbols, 0, 4);
 
     foreach ($symbols as $symbol) {
         $result[] = getStockInfo($symbol, $apiKey, $country);
@@ -119,7 +119,7 @@ function getCurrencySymbol($currencyCode) {
 }
 
 
-
+//print_r(getStocks(['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA'], API_KEY, 'United States'));
 
 ?>
 

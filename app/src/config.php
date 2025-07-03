@@ -89,16 +89,25 @@ function getStocksByCountry($country){
         ['symbol' => 'NIO', 'price' => 9.45, 'change_percent' => 2.05],
     ],
     'Japan' => [
-        ['symbol' => 'Toyota', 'price' => 2600.00, 'change_percent' => 0.55], // Toyota
-        ['symbol' => 'Sony', 'price' => 13250.00, 'change_percent' => -0.88], // Sony
-        ['symbol' => 'Softbank', 'price' => 6500.00, 'change_percent' => 1.20], // SoftBank
-        ['symbol' => 'Honda', 'price' => 875.20, 'change_percent' => 0.45], // Honda
-        ['symbol' => 'NTT', 'price' => 3100.75, 'change_percent' => -0.35], // NTT
-    ],
-];
+        ['symbol' => 'TM', 'price' => 171.98, 'change_percent' => 0.55],       // Toyota
+        ['symbol' => 'SONY', 'price' => 25.71, 'change_percent' => -0.88],     // Sony
+        ['symbol' => 'SFTBY', 'price' => 36.80, 'change_percent' => 1.20],     // SoftBank
+        ['symbol' => 'HMC', 'price' => 29.68, 'change_percent' => 0.45],       // Honda
+        ['symbol' => 'NTTYY', 'price' => 3.10, 'change_percent' => -0.35],     // NTT
+    ]
+    ];
     return $stocksData[$country] ?? [];
 }
-
+function getFavStocks(){
+    $stocksData = [
+    ['symbol' => 'DTE.DE', 'price' => 22.45, 'change_percent' => 0.85],
+    ['symbol' => 'BAS.DE', 'price' => 48.90, 'change_percent' => -0.42],
+    ['symbol' => 'BMW.DE', 'price' => 96.30, 'change_percent' => 1.05],
+    ['symbol' => 'SAP.DE', 'price' => 135.70, 'change_percent' => -0.18],
+    ['symbol' => 'VOW3.DE', 'price' => 112.80, 'change_percent' => 0.34],
+] ;
+    return $stocksData;
+}
 
 ?>
 
