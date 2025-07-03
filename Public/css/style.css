@@ -1124,7 +1124,39 @@
 @media (max-width:600px){
   .stock-detail-modal-content { min-width: 80vw; max-width: 96vw; padding:18px 8vw;}
 }
+.favorite-btn {
+  background: none;
+  border: none;
+  color: #f6c700;
+  font-size: 1.2em;
+  cursor: pointer;
+  margin-left: 8px;
+}
 
+.buy-btn {
+  background: #1d72b8;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  font-size: 0.95em;
+  padding: 2px 11px;
+  margin-left: 8px;
+  cursor: pointer;
+}
+.favorite-btn:hover, .buy-btn:hover {
+  opacity: 0.8;
+}
+
+.favorites-list {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 12px;
+}
+.favorites-list li {
+  padding: 6px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 1.11em;
+}
   body {
   background-image: url('/Public/images/background.jpg');
   background-size: cover;        /* Stretch to fill screen */

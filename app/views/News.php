@@ -63,6 +63,7 @@ $newsList = getFinnhubNews('general', 6);
           </a>
         </h3>
         <div class="news-meta">
+          <?= !empty($news['category']) ? htmlspecialchars($news['category']) . ' • ' : '' ?>
           <?= !empty($news['source']) ? htmlspecialchars($news['source']) . ' • ' : '' ?>
           <?= isset($news['date']) ? htmlspecialchars($news['date']) : '' ?>
         </div>

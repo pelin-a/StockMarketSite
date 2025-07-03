@@ -1,18 +1,32 @@
 <?php
 session_start();
 
+require_once __DIR__ . '/../src/Stock.php'; 
+require_once __DIR__ . '/../src/User.php';
+require_once __DIR__ . '/../src/config.php';
+
+
+if (!isset($_SESSION['favorites'])) $_SESSION['favorites'] = [];
+if (!isset($_SESSION['portfolio'])) $_SESSION['portfolio'] = [];
 if (!isset($_SESSION['user_email'])) {
     header('Location: /app/views/Login.php');
     exit();
 }
-require_once __DIR__ . '/../src/Stock.php'; 
-require_once __DIR__ . '/../src/User.php';
-require_once __DIR__ . '/../src/config.php';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['add_favorite']) && !in_array($_POST['favorite_symbol'], $_SESSION['favorites'])) {
+        $_SESSION['favorites'][] = $_POST['favorite_symbol'];
+    }
+    if (isset($_POST['buy_stock']) && !in_array($_POST['buy_symbol'], $_SESSION['portfolio'])) {
+        $_SESSION['portfolio'][] = $_POST['buy_symbol'];
+    }
+    // Sayfayı yenile
+    header("Location: " . $_SERVER['REQUEST_URI']);
+    exit;
+}
 $userEmail=$_SESSION['user_email'] ?? 'Guest'; 
 // Default to 'Guest' if not logged in
 $userInfo=getUserInfo($userEmail);
 
-$apiKey = "043de246c6e34bc8b644bdaa7f669aca"; // Replace with your real API key
 $symbols = ['AAPL', 'GOOGL', 'MSFT','TSLA', 'AMZN', 'NFLX']; // Example symbols
 
 $selectedCountry = $_GET['country'] ?? 'United States';
@@ -74,7 +88,7 @@ if ($currency != 'USD'){
   $totalValue = convertCurrency('USD', $currency, number_format($totalValue, 2));
   $dailyChange = convertCurrency('USD', $currency, number_format($dailyChange, 2));
 }?>
-
+<!-- World Stocks-->
 <section class="card worldstocks-card center-card">
   <h3>World Stocks</h3>
   <div class="worldstocks-header">
@@ -103,21 +117,30 @@ if ($currency != 'USD'){
         } ?>
         
         <li>
-            <span><?= htmlspecialchars($stock['symbol']) ?></span>
-            <span style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
-                <span><?= $symbol . $price ?></span>
-                <b class="<?= $changeClass ?>">
-                    <?= $stock['change_percent'] >= 0 ? '+' : '' ?><?= number_format($stock['change_percent'], 2) ?>%
-                </b>
-            </span>
-        </li>
+    <span><?= htmlspecialchars($stock['symbol']) ?></span>
+    <span style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
+        <span><?= $symbol . $price ?></span>
+        <b class="<?= $changeClass ?>">
+            <?= $stock['change_percent'] >= 0 ? '+' : '' ?><?= number_format($stock['change_percent'], 2) ?>%
+        </b>
+        <!-- Butonlar burada -->
+        <form method="POST" style="display:inline;">
+            <input type="hidden" name="favorite_symbol" value="<?= htmlspecialchars($stock['symbol']) ?>">
+            <button type="submit" name="add_favorite" class="favorite-btn">⭐</button>
+        </form>
+        <form method="POST" style="display:inline;">
+            <input type="hidden" name="buy_symbol" value="<?= htmlspecialchars($stock['symbol']) ?>">
+            <button type="submit" name="buy_stock" class="buy-btn">Buy</button>
+        </form>
+    </span>
+</li>
     <?php endforeach; ?>
 <?php endif; ?>
 </ul>
   </div>
 </section>
 
-  <!-- Üstte üç kart yan yana -->
+  <!-- Altta üç kart yan yana -->
   <div class="top-row">
     <!-- Portfolio Summary -->
     <section class="card portfolio-card">
@@ -173,36 +196,19 @@ if ($currency != 'USD'){
     <section class="card favs-card">
       <h3>Favorite Stocks</h3>
       <?php
-      // Example favorites; replace with user-specific favorites if needed
-      $favorites = ['AAPL', 'TSLA', 'BMW.DE', 'BAS.DE'];
-      $favoriteStocks = getFavStocks();
+        $favSymbols = $_SESSION['favorites'] ?? [];
       ?>
       <ul class="favorites">
-      <?php if (count($favoriteStocks) === 0): ?>
+        <?php if (empty($favSymbols)): ?>
           <li>No favorite stocks found in the current market.</li>
-      <?php else: ?>
-          <?php foreach ($favoriteStocks as $stock): ?>
-              <?php $changeClass = $stock['change_percent'] < 0 ? 'profit-down' : 'profit-up'; 
-              if ($currency != 'USD') {
-            $price = convertCurrency('USD', $currency, number_format($stock['price'], 2)); // Assuming you have a function to convert currency
-        }  else{
-          $price = number_format($stock['price'], 2);
-        }?>
-        <li>
-            <span><?= htmlspecialchars($stock['symbol']) ?></span>
-            <span style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
-                <span> <?=  $symbol. $price ?></span>
-                <b class="<?= $changeClass ?>">
-                    <?= $stock['change_percent'] >= 0 ? '+' : '' ?><?= number_format($stock['change_percent'], 2) ?>%
-                </b>
-            </span>
-        </li>
+        <?php else: ?>
+          <?php foreach ($favSymbols as $symbol): ?>
+            <li><?= is_array($symbol) ? htmlspecialchars($symbol['symbol']) : htmlspecialchars($symbol) ?></li>
           <?php endforeach; ?>
-      <?php endif; ?>
+        <?php endif; ?>
       </ul>
     </section>
   </div>
-
 
 
 

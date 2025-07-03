@@ -95,16 +95,7 @@ function getStocksByCountry($country){
     ];
     return $stocksData[$country] ?? [];
 }
-function getFavStocks(){
-    $stocksData = [
-    ['symbol' => 'DTE.DE', 'price' => 22.45, 'change_percent' => 0.85],
-    ['symbol' => 'BAS.DE', 'price' => 48.90, 'change_percent' => -0.42],
-    ['symbol' => 'BMW.DE', 'price' => 96.30, 'change_percent' => 1.05],
-    ['symbol' => 'SAP.DE', 'price' => 135.70, 'change_percent' => -0.18],
-    ['symbol' => 'VOW3.DE', 'price' => 112.80, 'change_percent' => 0.34],
-] ;
-    return $stocksData;
-}
+
 
 ?>
 

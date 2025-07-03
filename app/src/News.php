@@ -37,10 +37,4 @@ function getFinnhubNews($category = 'general', $limit = 10) {
 
     return $newsList;
 }
-
- // For testing purposes, remove in production
-
-
-
-
 ?>

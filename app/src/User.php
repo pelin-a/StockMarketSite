@@ -101,16 +101,41 @@ function getUserInfo($email) {
         return null; // user not found
     }
 }
-
-
-
-
-
-
-$usr= new User('', '', ''); // Create an instance of User class with empty values
-// You can now use $usr to call methods like $usr->registration() or $usr
-
-// $usr -> registration('pelin','pelin', 'pelin@gmail.com')
+function addToFavorites($userEmail, $symbol) {
+    if (!isset($_SESSION['favorites'])) {
+        $_SESSION['favorites'] = [];
+    }
+    // Aynı sembol birden fazla eklenmesin
+    foreach ($_SESSION['favorites'] as $fav) {
+        if ($fav['symbol'] === $symbol) return;
+    }
+    $_SESSION['favorites'][] = [
+        'symbol' => $symbol,
+        'added_at' => date('Y-m-d H:i:s'),
+        'user' => $userEmail
+    ];
+}
+function addToPortfolio($userEmail, $symbol, $price = null, $quantity = 1) {
+    if (!isset($_SESSION['portfolio'])) {
+        $_SESSION['portfolio'] = [];
+    }
+    // Aynı stock tekrar alınırsa miktarı arttır
+    foreach ($_SESSION['portfolio'] as &$item) {
+        if ($item['symbol'] === $symbol) {
+            $item['quantity'] += $quantity;
+            return;
+        }
+    }
+    // Yoksa yeni kaydı ekle
+    $_SESSION['portfolio'][] = [
+        'symbol' => $symbol,
+        'buy_price' => $price,
+        'quantity' => $quantity,
+        'buy_date' => date('Y-m-d H:i:s'),
+        'user' => $userEmail
+    ];
+}
+$usr= new User('', '', ''); 
 
 // print($usr -> login('pelin@gmail.com', 'pelin'));
 
