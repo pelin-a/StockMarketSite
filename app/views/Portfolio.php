@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 if (!isset($_SESSION['user_email'])) {
     header('Location: Login.php');
@@ -96,56 +97,55 @@ $userInfo=getUserInfo($userEmail);
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>AAPL</td>
-          <td>Apple</td>
-          <td>15</td>
-          <td>€180</td>
-          <td>€218.5</td>
-          <td>€3,277.5</td>
-          <td><span class="profit-up">+€577.5 (+21%)</span></td>
-        </tr>
-        <tr>
-          <td>TSLA</td>
-          <td>Tesla</td>
-          <td>5</td>
-          <td>€195</td>
-          <td>€215.8</td>
-          <td>€1,079</td>
-          <td><span class="profit-up">+€104 (+10.7%)</span></td>
-        </tr>
-        <tr>
-          <td>BAYN</td>
-          <td>Bayer</td>
-          <td>10</td>
-          <td>€30.1</td>
-          <td>€29.7</td>
-          <td>€297</td>
-          <td><span class="profit-down">-€4 (-1.3%)</span></td>
-        </tr>
-        <tr>
-          <td>DBK</td>
-          <td>Deutsche Bank</td>
-          <td>12</td>
-          <td>€8.20</td>
-          <td>€10.20</td>
-          <td>€122.40</td>
-          <td><span class="profit-up">+€24 (+24%)</span></td>
-        </tr>
-        <!-- More rows as needed -->
+        <?php
+        require_once __DIR__ . '/../src/Stock.php';
+        $portfolio = $_SESSION['portfolio'] ?? [];
+        if (empty($portfolio)) {
+          echo '<tr><td colspan="7" style="text-align:center;">No holdings yet.</td></tr>';
+        } else {
+          foreach ($portfolio as $holding) {
+            // Support both old (string) and new (array) format
+            if (is_string($holding)) {
+              $symbol = $holding;
+              $quantity = 1;
+              $buy_price = 0.0;
+            } else {
+              $symbol = $holding['symbol'];
+              $quantity = isset($holding['quantity']) ? (int)$holding['quantity'] : 1;
+              $buy_price = isset($holding['buy_price']) ? (float)$holding['buy_price'] : 0.0;
+            }
+            $stockInfo = getStockInfo($symbol, API_KEY, $selectedCountry ?? 'United States');
+            $name = $stockInfo['name'] ?? $symbol;
+            $current_price = isset($stockInfo['price']) ? (float)$stockInfo['price'] : 0.0;
+            $value = $current_price * $quantity;
+            $gain = $current_price - $buy_price;
+            $gain_total = $gain * $quantity;
+            $gain_percent = ($buy_price > 0) ? ($gain / $buy_price) * 100 : 0;
+            $is_up = $gain_total >= 0;
+            $gain_class = $is_up ? 'profit-up' : 'profit-down';
+            $gain_sign = $is_up ? '+' : '';
+            // Format numbers
+            $buy_price_disp = '€' . number_format($buy_price, 2);
+            $current_price_disp = '€' . number_format($current_price, 2);
+            $value_disp = '€' . number_format($value, 2);
+            $gain_total_disp = $gain_sign . '€' . number_format($gain_total, 2);
+            $gain_percent_disp = $gain_sign . number_format($gain_percent, 1) . '%';
+            echo '<tr>';
+            echo "<td>{$symbol}</td>";
+            echo "<td>{$name}</td>";
+            echo "<td>{$quantity}</td>";
+            echo "<td>{$buy_price_disp}</td>";
+            echo "<td>{$current_price_disp}</td>";
+            echo "<td>{$value_disp}</td>";
+            echo "<td><span class=\"{$gain_class}\">{$gain_total_disp} ({$gain_percent_disp})</span></td>";
+            echo '</tr>';
+          }
+        }
+        ?>
       </tbody>
     </table>
   </section>
 
-  <!-- Latest Transactions -->
-  <!-- <section class="card transactions-card">
-    <h3>Latest Transactions</h3>
-    <ul class="transactions-list">
-      <li><b>Bought</b> 2 x <b>TSLA</b> @ €214.00 — <span class="date">29 Jun 2025</span></li>
-      <li><b>Sold</b> 5 x <b>BAYN</b> @ €30.00 — <span class="date">27 Jun 2025</span></li>
-      <li><b>Bought</b> 10 x <b>AAPL</b> @ €215.00 — <span class="date">15 Jun 2025</span></li>
-    </ul>
-  </section> -->
 
  
 
@@ -160,5 +160,3 @@ $userInfo=getUserInfo($userEmail);
 </footer>
 
 </html>
-
-

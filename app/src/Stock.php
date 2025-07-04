@@ -75,7 +75,7 @@ function getStockInfo($symbol, $apiKey, $country) {
 function getStocks($symbols, $apiKey, $country) {
     $result = [];
     // Limit to 4 symbols max
-    $symbols = array_slice($symbols, 0, 4);
+    $symbols = array_slice($symbols, 0, 12);
     foreach ($symbols as $symbol) {
         $result[] = getStockInfo($symbol, $apiKey, $country);
         sleep(1); // avoid rapid requests
@@ -146,6 +146,29 @@ function getCurrencySymbol($currencyCode) {
         'CNY' => '¥'
     ];
     return $symbols[$currencyCode] ?? $currencyCode;
+}
+function getExchangeRate($from, $to) {
+    if ($from === $to) return 1;
+    $cacheKey = "rate_{$from}_{$to}";
+    $cacheFile = __DIR__ . "/cache/{$cacheKey}.json";
+    $cacheTime = 1800; // 30 min cache
+
+    if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < $cacheTime) {
+        $data = json_decode(file_get_contents($cacheFile), true);
+        if (isset($data['rate'])) return $data['rate'];
+    }
+
+    $url = "https://api.frankfurter.app/latest?from=$from&to=$to";
+    $json = file_get_contents($url);
+    $data = json_decode($json, true);
+
+    if (isset($data['rates'][$to])) {
+        $rate = $data['rates'][$to];
+        file_put_contents($cacheFile, json_encode(['rate' => $rate]));
+        return $rate;
+    }
+
+    return 1; // fallback
 }
 
 ?>

@@ -10,6 +10,38 @@ $userEmail=$_SESSION['user_email'] ?? 'Guest';
 // Default to 'Guest' if not logged in
 $userInfo=getUserInfo($userEmail);
 
+// Country code to name and flag mapping
+$countryMap = [
+    'US' => ['flag' => '🇺🇸', 'name' => 'United States'],
+    'DE' => ['flag' => '🇩🇪', 'name' => 'Germany'],
+    'JP' => ['flag' => '🇯🇵', 'name' => 'Japan'],
+    'CN' => ['flag' => '🇨🇳', 'name' => 'China'],
+    'CA' => ['flag' => '🇨🇦', 'name' => 'Canada']
+];
+
+// Define top symbols for each country
+$symbolsByCountry = [
+    'US' => ['AAPL', 'MSFT', 'GOOGL', 'TSLA', 'AMZN', 'NFLX', 'NVDA', 'META'],
+    'DE' => [],
+    'JP' => [],
+    'CN' => [],
+    'CA' => []
+];
+$selectedCountry = $_GET['country'] ?? 'US';
+$countryName = $countryMap[$selectedCountry]['name'] ?? 'USA';
+$symbols = $symbolsByCountry[$selectedCountry] ?? $symbolsByCountry['US'];
+$stocks = getStocks($symbols, API_KEY, $countryName);
+
+// Fetch stocks for the selected country
+
+
+// If a symbol is set, fetch detailed stock info for modal display
+$stockDetail = null;
+if (isset($_GET['symbol'])) {
+    $symbol = $_GET['symbol'];
+    $stockDetail = getStockInfo($symbol, API_KEY, $countryName);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -36,7 +68,7 @@ $userInfo=getUserInfo($userEmail);
     <li><a href="Premium.php">Premium</a></li>
   </ul>
   <div class="navbar-profile">
-    <span><?= $userInfo['username'] ?></span>
+    <span><?= htmlspecialchars($userInfo['username']) ?></span>
     <a class="logout" href="../src/logout.php">Logout</a>
     <button id="themeSwitcher" title="Switch theme" class="theme-switcher-btn">🌞</button>
   </div>
@@ -48,183 +80,107 @@ $userInfo=getUserInfo($userEmail);
     <h3>Browse Stocks by Country</h3>
     <div class="worldstocks-header">
       <label for="countryStockSelect">Select Country:</label>
-      <select id="countryStockSelect">
-        <option value="US">🇺🇸 USA</option>
-        <option value="DE">🇩🇪 Germany</option>
-        <option value="JP">🇯🇵 Japan</option>
-        <option value="CN">🇨🇳 China</option>
-        <option value="CA">🇨🇦 Canada</option>
+      <select id="countryStockSelect" onchange="location.href='StockDetail.php?country='+this.value;">
+        <?php foreach ($countryMap as $code => $data): ?>
+          <option value="<?= htmlspecialchars($code) ?>" <?= $code === $selectedCountry ? 'selected' : '' ?>><?= htmlspecialchars($data['flag'] . ' ' . $data['name']) ?></option>
+        <?php endforeach; ?>
       </select>
     </div>
   </section>
 
   <!-- Stock List (country filtered) -->
   <section class="card stock-list-detail-card center-card">
-    <h3 id="countryNameHeader">Top Stocks — USA</h3>
+    <h3 id="countryNameHeader">Top Stocks — <?= htmlspecialchars($countryName) ?></h3>
     <div id="stocksLoading" class="loading-spinner" style="display:none;"></div>
     <ul class="stock-detail-list" id="stockDetailList">
-      <!-- Stocks will be loaded here by JS -->
+      <?php
+      // Replaced static JS stock list with dynamic PHP loop over $stocks
+      if (!empty($stocks)):
+          foreach ($stocks as $stock):
+              $changeVal = $stock['change'] ?? 0;
+              $changePctVal = $stock['change_percent'] ?? 0;
+              $changeClass = ($changeVal >= 0) ? "profit-up" : "profit-down";
+              $changeDisplay = ($changeVal > 0 ? "+" : "") . $changeVal . " (" . $changePctVal . "%)";
+              $currency = $stock['currency'] ?? '';
+      ?>
+      <li>
+        <div class="stock-detail-row" onclick="window.location.href='StockDetail.php?country=<?= urlencode($selectedCountry) ?>&symbol=<?= urlencode($stock['symbol']) ?>'">
+          <div class="stock-detail-main">
+            <span class="stock-symbol"><?= htmlspecialchars($stock['symbol']) ?></span>
+            <span class="stock-name"><?= htmlspecialchars($stock['name']) ?></span>
+            <span class="stock-sector"><?= htmlspecialchars($stock['industry'] ?? '') ?></span>
+          </div>
+          <div class="stock-detail-prices">
+            <span class="stock-price"><?= htmlspecialchars($stock['price']) ?> <span class="currency"><?= htmlspecialchars($currency) ?></span></span>
+            <span class="stock-change <?= $changeClass ?>"><?= htmlspecialchars($changeDisplay) ?></span>
+          </div>
+        </div>
+      </li>
+      <?php
+          endforeach;
+      else:
+      ?>
+      <li>No stocks available for selected country.</li>
+      <?php endif; ?>
     </ul>
   </section>
 
   <!-- Stock Detail Drawer/Modal -->
-  <div class="stock-detail-modal" id="stockDetailModal" style="display:none;">
+  <?php if ($stockDetail): ?>
+  <div class="stock-detail-modal" id="stockDetailModal" style="display:flex;">
     <div class="stock-detail-modal-content card">
       <button class="close-modal" id="closeDetailModal">&times;</button>
       <div id="modalStockContent">
-        <!-- Stock details will be loaded here -->
+        <!-- Stock details loaded dynamically from PHP $stockDetail -->
+        <div class="stock-detail-modal-header">
+          <div class="stock-detail-modal-symbol"><?= htmlspecialchars($stockDetail['symbol'] ?? 'N/A') ?> <span class="stock-sector"><?= htmlspecialchars($stockDetail['industry'] ?? 'N/A') ?></span></div>
+          <div class="stock-detail-modal-name"><?= htmlspecialchars($stockDetail['name'] ?? 'N/A') ?></div>
+        </div>
+        <div class="stock-detail-modal-main-info">
+          <div class="stock-detail-modal-price"><?= htmlspecialchars($stockDetail['price'] ?? 'N/A') ?> <?= htmlspecialchars($stockDetail['currency'] ?? '') ?> <span class="stock-change"><?= htmlspecialchars(($stockDetail['change'] ?? 'N/A') . ' (' . ($stockDetail['change_percent'] ?? 'N/A') . '%)') ?></span></div>
+          <div class="stock-detail-modal-cap">Market Cap: <b><?= htmlspecialchars($stockDetail['market_cap'] ?? 'N/A') ?></b></div>
+          <div class="stock-detail-modal-pe">Exchange: <b><?= htmlspecialchars($stockDetail['exchange'] ?? 'N/A') ?></b></div>
+          <div class="stock-detail-modal-div">Country: <b><?= htmlspecialchars($stockDetail['country'] ?? 'N/A') ?></b></div>
+        </div>
+        <div class="stock-detail-modal-meta">
+          <span><b>Exchange:</b> <?= htmlspecialchars($stockDetail['exchange'] ?? 'N/A') ?></span> |
+          <span><b>Industry:</b> <?= htmlspecialchars($stockDetail['industry'] ?? 'N/A') ?></span> |
+          <span><b>Country:</b> <?= htmlspecialchars($stockDetail['country'] ?? 'N/A') ?></span>
+        </div>
+        <div class="stock-detail-modal-desc"><?= htmlspecialchars($stockDetail['website'] ?? 'N/A') ?></div>
+        <div class="stock-detail-modal-actions">
+          <a href="<?= htmlspecialchars($stockDetail['website'] ?? '#') ?>" target="_blank" class="website-link">Visit Website</a>
+        </div>
+        <div class="stock-detail-modal-news">
+          <h4>Recent News</h4>
+          <ul>
+            <?php
+            if (!empty($stockDetail['news'])):
+                foreach ($stockDetail['news'] as $newsItem):
+            ?>
+            <li><a href="<?= htmlspecialchars($newsItem['url']) ?>"><?= htmlspecialchars($newsItem['title']) ?></a></li>
+            <?php
+                endforeach;
+            else:
+            ?>
+            <li>No recent news available.</li>
+            <?php endif; ?>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
+  <?php endif; ?>
 </main>
 
 <script>
-/*
-  --- Replace the following "stocksData" with Finnhub API fetches in real use ---
-  Below is just a static demo!
-*/
-const stocksData = {
-  US: [
-    { symbol: "AAPL", name: "Apple Inc.", price: 218.5, change: 1.3, changePct: "+0.7%", marketCap: "2.8T", sector: "Technology", finnhubId: "AAPL" },
-    { symbol: "MSFT", name: "Microsoft Corp.", price: 325.8, change: -2.1, changePct: "-0.6%", marketCap: "2.7T", sector: "Technology", finnhubId: "MSFT" }
-  ],
-  DE: [
-    { symbol: "SAP", name: "SAP SE", price: 177.2, change: 1.6, changePct: "+0.9%", marketCap: "207B", sector: "Software", finnhubId: "SAP.DE" }
-  ],
-  // ... Add JP, CN, CA as needed
-};
-
+// Modal open/close UI logic only
 const modal = document.getElementById('stockDetailModal');
-const modalContent = document.getElementById('modalStockContent');
 const closeBtn = document.getElementById('closeDetailModal');
-
-function renderStockList(country) {
-  const list = document.getElementById('stockDetailList');
-  const header = document.getElementById('countryNameHeader');
-  list.innerHTML = '';
-  header.textContent = `Top Stocks — ${country}`;
-  document.getElementById('stocksLoading').style.display = 'block';
-
-  setTimeout(() => {
-    document.getElementById('stocksLoading').style.display = 'none';
-    (stocksData[country] || []).forEach(stock => {
-      const li = document.createElement('li');
-      li.innerHTML = `
-        <div class="stock-detail-row" onclick="showStockDetail('${country}','${stock.symbol}')">
-          <div class="stock-detail-main">
-            <span class="stock-symbol">${stock.symbol}</span>
-            <span class="stock-name">${stock.name}</span>
-            <span class="stock-sector">${stock.sector}</span>
-          </div>
-          <div class="stock-detail-prices">
-            <span class="stock-price">${stock.price} <span class="currency">${country === "US" ? "USD" : country === "DE" ? "EUR" : ""}</span></span>
-            <span class="stock-change ${stock.change >= 0 ? "profit-up" : "profit-down"}">${stock.change > 0 ? "+" : ""}${stock.change} (${stock.changePct})</span>
-          </div>
-        </div>
-      `;
-      list.appendChild(li);
-    });
-  }, 600);
+if (closeBtn) {
+    closeBtn.onclick = () => { modal.style.display = 'none'; window.history.pushState({}, document.title, "StockDetail.php?country=<?= urlencode($selectedCountry) ?>"); };
 }
-
-window.showStockDetail = function(country, symbol) {
-  // Normally here you'd fetch details from Finnhub:
-  // e.g. fetch(`/api/stock-detail?symbol=${symbol}&country=${country}`)
-  // For demo, just fill with example data:
-  let data = {};
-  if (country === "US" && symbol === "AAPL") {
-    data = {
-      symbol: "AAPL",
-      name: "Apple Inc.",
-      sector: "Technology",
-      price: "218.5",
-      currency: "USD",
-      change: "+1.3 (+0.7%)",
-      marketCap: "2.8T",
-      peRatio: "34.2",
-      dividend: "0.50%",
-      ceo: "Tim Cook",
-      employees: "164,000",
-      founded: "1976",
-      website: "https://apple.com",
-      high52w: "230.0",
-      low52w: "170.3",
-      headquarters: "Cupertino, CA",
-      description: "Apple Inc. designs, manufactures, and markets smartphones, computers, wearables and more.",
-      analyst: "Strong Buy",
-      news: [
-        { title: "Apple introduces new AI features", url: "News.php" },
-        { title: "Quarterly earnings beat expectations", url: "News.php" }
-      ]
-    };
-  } else if (country === "DE" && symbol === "SAP") {
-    data = {
-      symbol: "SAP",
-      name: "SAP SE",
-      sector: "Software",
-      price: "177.2",
-      currency: "EUR",
-      change: "+1.6 (+0.9%)",
-      marketCap: "207B",
-      peRatio: "28.7",
-      dividend: "1.60%",
-      ceo: "Christian Klein",
-      employees: "107,415",
-      founded: "1972",
-      website: "https://sap.com",
-      high52w: "182.2",
-      low52w: "131.3",
-      headquarters: "Walldorf, Germany",
-      description: "SAP SE provides enterprise application software and services worldwide.",
-      analyst: "Buy",
-      news: [
-        { title: "SAP to acquire new cloud startup", url: "News.php" }
-      ]
-    };
-  }
-  // ... other stocks
-
-  // Build detail HTML
-  modalContent.innerHTML = `
-    <div class="stock-detail-modal-header">
-      <div class="stock-detail-modal-symbol">${data.symbol} <span class="stock-sector">${data.sector}</span></div>
-      <div class="stock-detail-modal-name">${data.name}</div>
-    </div>
-    <div class="stock-detail-modal-main-info">
-      <div class="stock-detail-modal-price">${data.price} ${data.currency} <span class="stock-change">${data.change}</span></div>
-      <div class="stock-detail-modal-cap">Market Cap: <b>${data.marketCap}</b></div>
-      <div class="stock-detail-modal-pe">P/E Ratio: <b>${data.peRatio}</b></div>
-      <div class="stock-detail-modal-div">Dividend: <b>${data.dividend}</b></div>
-      <div class="stock-detail-modal-hi-lo">52w High/Low: <b>${data.high52w}</b> / <b>${data.low52w}</b></div>
-    </div>
-    <div class="stock-detail-modal-meta">
-      <span><b>CEO:</b> ${data.ceo}</span> |
-      <span><b>Employees:</b> ${data.employees}</span> |
-      <span><b>Founded:</b> ${data.founded}</span> |
-      <span><b>HQ:</b> ${data.headquarters}</span>
-    </div>
-    <div class="stock-detail-modal-desc">${data.description}</div>
-    <div class="stock-detail-modal-actions">
-      <a href="${data.website}" target="_blank" class="website-link">Visit Website</a>
-      <span class="analyst-badge">Analyst: ${data.analyst}</span>
-    </div>
-    <div class="stock-detail-modal-news">
-      <h4>Recent News</h4>
-      <ul>
-        ${data.news.map(n => `<li><a href="${n.url}">${n.title}</a></li>`).join("")}
-      </ul>
-    </div>
-  `;
-  modal.style.display = 'flex';
-};
-closeBtn.onclick = () => { modal.style.display = 'none'; };
-window.onclick = e => { if(e.target === modal) modal.style.display = 'none'; }
-
-document.getElementById('countryStockSelect').addEventListener('change', function() {
-  const country = this.value;
-  renderStockList(country);
-});
-renderStockList('US');
+window.onclick = e => { if(e.target === modal) modal.style.display = 'none'; };
 </script>
 
 <style></style>

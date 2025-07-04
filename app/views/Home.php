@@ -16,10 +16,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['add_favorite']) && !in_array($_POST['favorite_symbol'], $_SESSION['favorites'])) {
         $_SESSION['favorites'][] = $_POST['favorite_symbol'];
     }
-    if (isset($_POST['buy_stock']) && !in_array($_POST['buy_symbol'], $_SESSION['portfolio'])) {
-        $_SESSION['portfolio'][] = $_POST['buy_symbol'];
+    if (isset($_POST['buy_stock'])) {
+    $symbol = $_POST['buy_symbol'];
+    // Fetch all available details at buy time
+    try {
+        $info = getStockInfo($symbol, API_KEY, $selectedCountry);
+    } catch (Exception $e) {
+        $info = [
+            'symbol' => $symbol
+            // fallback: minimal info
+        ];
+    }
+    // Optionally set a default quantity (1) and store buy price
+    $portfolioEntry = $info;
+    $portfolioEntry['quantity'] = 1;
+    $portfolioEntry['buy_price'] = $info['price'] ?? 0;
+    $portfolioEntry['buy_date'] = date('Y-m-d');
+    
+    // Prevent duplicates by symbol
+    $found = false;
+    foreach ($_SESSION['portfolio'] as $existing) {
+        if (is_array($existing) && isset($existing['symbol']) && $existing['symbol'] === $symbol) {
+            $found = true;
+            break;
+        }
+        if (is_string($existing) && $existing === $symbol) {
+            $found = true;
+            break;
+        }
+    }
+    if (!$found) {
+        $_SESSION['portfolio'][] = $portfolioEntry;
     }
     // Sayfayı yenile
+    header("Location: " . $_SERVER['REQUEST_URI']);
+    exit;
+}
     header("Location: " . $_SERVER['REQUEST_URI']);
     exit;
 }
@@ -38,6 +70,11 @@ $stocks = getStocksByCountry($selectedCountry);
 }
 $stocksOverview=getStocks($symbols, API_KEY, 'United States');
 $currency = $_GET['currency'] ?? 'USD'; 
+if ($currency != 'USD') {
+    $exchangeRate = getExchangeRate('USD', $currency);
+} else {
+    $exchangeRate = 1;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -110,11 +147,8 @@ if ($currency != 'USD'){
 <?php else: ?>
     <?php foreach ($stocks as $stock): ?>
         <?php $changeClass = $stock['change_percent'] < 0 ? 'profit-down' : 'profit-up'; 
-        if ($currency != 'USD') {
-            $price = convertCurrency('USD', $currency, number_format($stock['price'], 2)); // Assuming you have a function to convert currency
-        } else {
-            $price = number_format($stock['price'], 2);
-        } ?>
+        $price = number_format($stock['price'] * $exchangeRate, 2);
+         ?>
         
         <li>
     <span><?= htmlspecialchars($stock['symbol']) ?></span>
@@ -172,11 +206,7 @@ if ($currency != 'USD'){
     <?php foreach ($stocksOverview as $item): ?>
       <?php
         $changeClass = strpos($item['change_percent'], '-') === 0 ? 'profit-down' : 'profit-up';
-        if ($currency != 'USD') {
-            $price = convertCurrency('USD', $currency, number_format($item['price'], 2)); // Assuming you have a function to convert currency
-        } else {
-            $price = number_format($item['price'], 2);
-        }
+        $price = number_format($item['price'] * $exchangeRate, 2);
       ?>
 <li>
   <span><?php echo htmlspecialchars($item['symbol']); ?></span>
